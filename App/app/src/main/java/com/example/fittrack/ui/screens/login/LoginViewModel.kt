@@ -2,6 +2,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.widget.Toast
 import com.example.fittrack.data.remote.ApiClient
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -46,7 +47,11 @@ class LoginViewModel : ViewModel() {
                     if (response.success) {
                         _navigation.emit(NavigationEvent.ToDashboard)
                     }
-                } catch (e: Exception) {
+                } catch (e: java.net.SocketTimeoutException) {
+                    _navigation.emit(NavigationEvent.ShowToast("Could not connect to server."))
+                    Log.e("LoginViewModel", "Login error", e)
+                }
+                catch (e: Exception) {
                     status.value = "Network error: ${e.message}"
                     Log.e("LoginViewModel", "Login error", e)
                 } finally {
@@ -58,5 +63,6 @@ class LoginViewModel : ViewModel() {
 
     sealed class NavigationEvent {
         data object ToDashboard : NavigationEvent()
+        data class ShowToast(val message: String) : NavigationEvent()
     }
 }

@@ -37,6 +37,14 @@ fun AppNavHost(navController: NavHostController) {
                             }
                         }
 
+                        is LoginViewModel.NavigationEvent.ShowToast -> {
+                            android.widget.Toast.makeText(
+                                navController.context,
+                                event.message,
+                                android.widget.Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
                         else -> {}
                     }
                 }
