@@ -1,9 +1,8 @@
 <?php
 // require 'db.php';
 
-$data = json_decode(file_get_contents('php://input'), true);
-$username = $data['username'] ?? '';
-$password = $data['password'] ?? '';
+$username = $_POST['username'] ?? '';
+$password = $_POST['password'] ?? '';
 
 error_log("username: {$username} password: {$password}");
 
