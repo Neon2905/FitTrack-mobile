@@ -40,7 +40,6 @@ class LoginViewModel : ViewModel() {
                     val response = _api.register(username.value, password.value)
                     _status.value = if (response.success) "Login success" else response.message
 
-                    Log.i("SUCCESS", "Login response: ${response.success}")
                     if (response.success) {
                         Navigator.navigate(NavRoute.Dashboard.route)
                     }
