@@ -2,18 +2,15 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import android.widget.Toast
 import com.example.fittrack.data.remote.ApiClient
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import com.example.fittrack.navigation.NavRoute
+import com.example.fittrack.navigation.Navigator
+import com.example.fittrack.utils.Toast
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
-    val api = ApiClient.apiService
-    val status = mutableStateOf("")
-
-    private val _navigation = MutableSharedFlow<NavigationEvent>()
-    val navigation: SharedFlow<NavigationEvent> = _navigation
+    private val _api = ApiClient.apiService
+    private val _status = mutableStateOf("")
 
     var isSigningIn = mutableStateOf(false)
         private set
@@ -39,30 +36,26 @@ class LoginViewModel : ViewModel() {
         if (username.value.isNotBlank() && password.value.isNotBlank()) {
             viewModelScope.launch {
                 try {
-                    isSigningIn.value = true;
-                    val response = api.register(username.value, password.value)
-                    status.value = if (response.success) "Login success" else response.message
+                    isSigningIn.value = true
+                    val response = _api.register(username.value, password.value)
+                    _status.value = if (response.success) "Login success" else response.message
 
                     Log.i("SUCCESS", "Login response: ${response.success}")
                     if (response.success) {
-                        _navigation.emit(NavigationEvent.ToDashboard)
+                        Navigator.navigate(NavRoute.Dashboard.route)
                     }
                 } catch (e: java.net.SocketTimeoutException) {
-                    _navigation.emit(NavigationEvent.ShowToast("Could not connect to server."))
+                    Toast.show("Cannot connect to server, please check your internet connection")
                     Log.e("LoginViewModel", "Login error", e)
                 }
                 catch (e: Exception) {
-                    status.value = "Network error: ${e.message}"
+                    // TODO: Decide to add status variable or not
+                    _status.value = "Network error: ${e.message}"
                     Log.e("LoginViewModel", "Login error", e)
                 } finally {
-                    isSigningIn.value = false;
+                    isSigningIn.value = false
                 }
             }
         }
-    }
-
-    sealed class NavigationEvent {
-        data object ToDashboard : NavigationEvent()
-        data class ShowToast(val message: String) : NavigationEvent()
     }
 }

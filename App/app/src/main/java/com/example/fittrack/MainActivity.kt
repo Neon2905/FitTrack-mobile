@@ -25,15 +25,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.fittrack.navigation.AppNavHost
 import com.example.fittrack.ui.theme.FitTrackTheme
+import com.example.fittrack.utils.Toast
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Toast.init(applicationContext)
+
         enableEdgeToEdge()
         setContent {
             FitTrackTheme {
-                val navController = rememberNavController()
-                AppNavHost(navController = navController)
+                AppNavHost()
             }
         }
     }

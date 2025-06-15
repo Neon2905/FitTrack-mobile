@@ -1,64 +1,30 @@
 package com.example.fittrack.navigation
 
 import LoginScreen
-import LoginViewModel
-import android.util.Log
+import SettingScreen
+import DashboardScreen
+
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.fittrack.ui.screens.dashboard.DashboardScreen
-import com.example.fittrack.ui.screens.setting.SettingScreen
-
-
 @Composable
-fun AppNavHost(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "login") {
-        composable("login") {
-            val viewModel: LoginViewModel = viewModel()
+fun AppNavHost() {
+    val navController = rememberNavController()
 
-            LaunchedEffect(viewModel) {
-                viewModel.navigation.collect { event ->
-                    when (event) {
-                        is LoginViewModel.NavigationEvent.ToDashboard -> {
-                            Log.d("AppNavHost", "Navigating to settings")
-                            navController.navigate("dashboard") {
-                                popUpTo("login") { inclusive = true }
-                            }
-                        }
+    LaunchedEffect(Unit) {
+        Navigator.setController(navController)
+    }
 
-                        is LoginViewModel.NavigationEvent.ShowToast -> {
-                            android.widget.Toast.makeText(
-                                navController.context,
-                                event.message,
-                                android.widget.Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                        else -> {}
-                    }
-                }
-            }
-
-            LoginScreen(viewModel)
-        }
-
-        composable("dashboard") {
-            DashboardScreen()
-        }
-
-        composable("settings") {
-            SettingScreen()
-        }
+    NavHost(
+        navController = navController,
+        startDestination = NavRoute.Login.route
+    ) {
+        composable(NavRoute.Login.route) { LoginScreen() }
+        composable(NavRoute.Dashboard.route) { DashboardScreen() }
+        // Add more routes here
     }
 }
