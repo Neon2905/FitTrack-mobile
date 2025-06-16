@@ -37,7 +37,7 @@ class LoginViewModel : ViewModel() {
             viewModelScope.launch {
                 try {
                     isSigningIn.value = true
-                    val response = _api.register(username.value, password.value)
+                    val response = _api.login(username.value, password.value)
                     _status.value = if (response.success) "Login success" else response.message
 
                     if (response.success) {

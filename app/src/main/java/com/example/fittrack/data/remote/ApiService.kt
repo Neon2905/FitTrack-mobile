@@ -10,21 +10,21 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @POST("register.php")
+    @POST("register")
     @FormUrlEncoded
     suspend fun register(
         @Field("username") username: String,
         @Field("password") password: String
     ): ApiResponse
 
-    @POST("login.php")
+    @POST("login")
     @FormUrlEncoded
     suspend fun login(
         @Field("username") username: String,
         @Field("password") password: String
     ): ApiResponse
 
-    @POST("add_workout.php")
+    @POST("add_workout")
     @FormUrlEncoded
     suspend fun addWorkout(
         @Field("user_id") userId: Int,
@@ -33,7 +33,7 @@ interface ApiService {
         @Field("calories") calories: Int
     ): ApiResponse
 
-    @GET("get_workouts.php")
+    @GET("get_workouts")
     suspend fun getWorkouts(
         @Query("user_id") userId: Int
     ): List<Workout>
