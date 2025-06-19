@@ -4,5 +4,3 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
 }
-
-extra["compose_ui_version"] = "1.6.1"
