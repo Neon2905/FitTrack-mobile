@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.ui.theme
+package com.fittrackapp.fittrack_mobile.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
