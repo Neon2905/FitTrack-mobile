@@ -2,6 +2,7 @@ package com.fittrackapp.fittrack_mobile
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -13,6 +14,8 @@ import com.fittrackapp.fittrack_mobile.utils.navigation.AppNavHost
 import com.fittrackapp.fittrack_mobile.presentation.NavBar
 import com.fittrackapp.fittrack_mobile.presentation.theme.FitTrackMobileTheme
 import com.fittrackapp.fittrack_mobile.utils.Toast
+import com.fittrackapp.fittrack_mobile.utils.navigation.NavRoute
+import com.fittrackapp.fittrack_mobile.utils.navigation.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,7 +26,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FitTrackMobileTheme {
-                val navController = rememberNavController()
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),

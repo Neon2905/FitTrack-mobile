@@ -4,6 +4,7 @@ import android.util.Log
 import arrow.core.Either
 import com.fittrackapp.fittrack_mobile.data.mapper.toGeneralError
 import com.fittrackapp.fittrack_mobile.data.model.LoginRequest
+import com.fittrackapp.fittrack_mobile.data.model.RegisterRequest
 import com.fittrackapp.fittrack_mobile.data.remote.AuthApi
 import com.fittrackapp.fittrack_mobile.domain.model.AuthUser
 import com.fittrackapp.fittrack_mobile.domain.model.NetworkError
@@ -31,7 +32,12 @@ class AuthRepositoryImpl @Inject constructor(
         username: String,
         password: String
     ): Either<NetworkError, AuthUser> {
-        TODO("Not yet implemented")
+        return Either.catch {
+            val request = RegisterRequest(username, password)
+            authApi.register(request)
+        }.mapLeft {
+            Log.e("AuthRepositoryImpl", "Registration failed: " + it.message, it)
+            it.toGeneralError() }
     }
 
     override suspend fun logout(): Boolean {

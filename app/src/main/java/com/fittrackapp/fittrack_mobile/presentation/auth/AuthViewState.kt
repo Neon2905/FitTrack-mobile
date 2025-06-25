@@ -4,5 +4,7 @@ data class AuthViewState(
     val isSigningIn: Boolean = false,
     val username: String = "",
     val password: String = "",
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isRegistering: Boolean = false,
+    val isOnSignIn: Boolean = true
 )

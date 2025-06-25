@@ -8,9 +8,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
@@ -27,7 +29,7 @@ fun LoginScreen() {
             .background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.BottomCenter,
     ) {
-        LoginSurface {
+        AuthSurface {
             LoginHeader()
             LoginInputFields(
                 state.username,
@@ -66,6 +68,19 @@ fun LoginScreen() {
                 SocialButton("Google") { /* TODO */ }
                 SocialButton("Facebook") { /* TODO */ }
             }
+
+            Row {
+                Text(text = "Don't have an account?")
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Sign Up",
+                    color = Color.Blue,
+                    modifier = Modifier.clickable {
+                        viewModel.onIsOnSignInChanged(false)
+                    }
+                )
+            }
+
             LoginFooter()
         }
     }

@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoginSurface(content: @Composable ColumnScope.() -> Unit) {
+fun AuthSurface(content: @Composable ColumnScope.() -> Unit) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()

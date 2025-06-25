@@ -20,8 +20,12 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
 
     // TODO: remove hardcoded values later
-    private val _state = MutableStateFlow(AuthViewState(username = "username", password = "password"))
+    private val _state = MutableStateFlow(AuthViewState(username = "Neon", password = "Password"))
     val state = _state.asStateFlow()
+
+    fun onIsOnSignInChanged(value: Boolean) {
+        _state.value = _state.value.copy(isOnSignIn = value)
+    }
 
     fun onUsernameChanged(value: String) {
         _state.value = _state.value.copy(username = value)
@@ -32,6 +36,10 @@ class AuthViewModel @Inject constructor(
     }
 
     fun login() {
+        // TODO: this line below ain't properly working
+        if(state.value.isSigningIn)
+            return
+
         viewModelScope.launch {
             _state.update { it.copy(isSigningIn = true) }
 
@@ -48,6 +56,30 @@ class AuthViewModel @Inject constructor(
                     Toast.show(error.error.message)
                 }
             _state.update { it.copy(isSigningIn = false) }
+        }
+    }
+
+    fun signup() {
+        if(state.value.isRegistering)
+            return
+
+        viewModelScope.launch {
+            _state.update { it.copy(isRegistering = true) }
+
+            authRepository.register(state.value.username, state.value.password)
+                .onRight { authUser ->
+                    Log.i("AuthViewModel", "SignUp successful: $authUser")
+                    Navigator.navigate(NavRoute.Dashboard.route);
+                }.onLeft { error ->
+                    _state.update {
+                        it.copy(
+                            errorMessage = error.error.message
+                        )
+                    }
+                    Toast.show(error.error.message)
+                }
+
+            _state.update { it.copy(isRegistering = false) }
         }
     }
 }
