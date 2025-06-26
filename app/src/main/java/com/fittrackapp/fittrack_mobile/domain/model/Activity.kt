@@ -4,6 +4,10 @@ import java.util.Date
 
 data class Activity(
     val id: Int,
-    val date: Date,
-    val calories: Int,
+    val type: String,
+    val startTime: Date,
+    val endTime: Date,
+    val steps: Int,
+    val distance: Float,
+    val calories: Float,
 )

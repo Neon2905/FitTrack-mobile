@@ -37,7 +37,7 @@ fun DateList(
 
 @Composable
 fun DateCard(activity: Activity, currentActivity: Activity, onSelect: (Activity) -> Unit = {}) {
-    val localDate = activity.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+    val localDate = activity.startTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
 
     Card(
         modifier = Modifier

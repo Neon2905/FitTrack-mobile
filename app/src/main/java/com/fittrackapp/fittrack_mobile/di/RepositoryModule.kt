@@ -1,6 +1,8 @@
 package com.fittrackapp.fittrack_mobile.di
 
+import com.fittrackapp.fittrack_mobile.data.repository.ActivityRepositoryImpl
 import com.fittrackapp.fittrack_mobile.data.repository.AuthRepositoryImpl
+import com.fittrackapp.fittrack_mobile.domain.repository.ActivityRepository
 import com.fittrackapp.fittrack_mobile.domain.repository.AuthRepository
 import dagger.Binds
 import dagger.Module
@@ -16,4 +18,7 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun provideAuthRepository(impl: AuthRepositoryImpl): AuthRepository
 
+    @Binds
+    @Singleton
+    abstract fun profideActivityRepository(impl: ActivityRepositoryImpl): ActivityRepository
 }

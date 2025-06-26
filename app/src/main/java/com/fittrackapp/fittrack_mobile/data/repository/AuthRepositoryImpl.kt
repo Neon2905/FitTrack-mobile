@@ -25,7 +25,8 @@ class AuthRepositoryImpl @Inject constructor(
             authApi.login(request)
         }.mapLeft {
             Log.e("AuthRepositoryImpl", "Login failed: " + it.message, it)
-            it.toGeneralError() }
+            it.toGeneralError()
+        }
     }
 
     override suspend fun register(
@@ -37,7 +38,8 @@ class AuthRepositoryImpl @Inject constructor(
             authApi.register(request)
         }.mapLeft {
             Log.e("AuthRepositoryImpl", "Registration failed: " + it.message, it)
-            it.toGeneralError() }
+            it.toGeneralError()
+        }
     }
 
     override suspend fun logout(): Boolean {

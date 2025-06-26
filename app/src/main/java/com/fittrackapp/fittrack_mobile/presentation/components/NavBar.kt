@@ -37,19 +37,15 @@ fun NavBar(
         NavigationBar(modifier = modifier) {
             navItems.forEach { item ->
                 NavigationBarItem(
-                    //TODO: Fix the issue with the currentRoute not being recognized
                     selected = currentRoute == item.route,
                     onClick = {
-                        if (currentRoute != item.route) {
-                            Navigator.navigate(item.route);
-                        }
+                        Navigator.navigate(item.route);
                     },
                     icon = {
                         Icon(imageVector = item.icon, contentDescription = item.label)
                     },
-                    label = {
-                        Text(text = item.label)
-                    }
+                    label = { Text(text = item.label) },
+                    alwaysShowLabel = false
                 )
             }
         }

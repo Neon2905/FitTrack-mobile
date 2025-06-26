@@ -1,6 +1,8 @@
 package com.fittrackapp.fittrack_mobile
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -23,6 +25,17 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Permission check (already present)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (checkSelfPermission(android.Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(android.Manifest.permission.ACTIVITY_RECOGNITION), 1001)
+            }
+        }
+
+        val activityRecognitionManager = ActivityRecognitionManager(this)
+        activityRecognitionManager.startActivityUpdates()
+
         enableEdgeToEdge()
         setContent {
             FitTrackMobileTheme {

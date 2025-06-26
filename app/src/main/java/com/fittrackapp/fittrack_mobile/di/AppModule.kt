@@ -1,5 +1,6 @@
 package com.fittrackapp.fittrack_mobile.di
 
+import com.fittrackapp.fittrack_mobile.data.remote.ActivityApi
 import com.fittrackapp.fittrack_mobile.data.remote.AuthApi
 import com.fittrackapp.fittrack_mobile.utils.Constants.BASE_URL
 import dagger.Module
@@ -23,6 +24,17 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AuthApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideActivityApi(): ActivityApi {
+        return Retrofit
+            .Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ActivityApi::class.java)
     }
 
 }

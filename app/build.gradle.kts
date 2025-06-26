@@ -60,6 +60,7 @@ dependencies {
     implementation (libs.accompanist.systemuicontroller.v0332alpha)
     implementation(libs.androidx.material.icons.extended.android)
     implementation(libs.androidx.credentials)
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

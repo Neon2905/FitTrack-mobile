@@ -13,7 +13,7 @@ class DashboardViewModel : ViewModel() {
             LocalDate.now().minusDays((29 - i).toLong()).atStartOfDay(ZoneId.systemDefault())
                 .toInstant()
         )
-        Activity(id = i + 1, date = date, calories = (400..900).random())
+        Activity(id = i + 1, startTime = date, endTime = date, type = "walking", steps = (100..12000).random(), distance = (1..20).random().toFloat(),  calories = (400..900).random().toFloat())
     })
 
     var currentActivity = mutableStateOf<Activity>(activities.value[0])
