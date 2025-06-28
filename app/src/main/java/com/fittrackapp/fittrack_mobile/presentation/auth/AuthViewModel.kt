@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fittrackapp.fittrack_mobile.domain.repository.AuthRepository
 import com.fittrackapp.fittrack_mobile.utils.Toast
-import com.fittrackapp.fittrack_mobile.utils.navigation.NavRoute
-import com.fittrackapp.fittrack_mobile.utils.navigation.Navigator
+import com.fittrackapp.fittrack_mobile.navigation.NavRoute
+import com.fittrackapp.fittrack_mobile.navigation.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

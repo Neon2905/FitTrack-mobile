@@ -7,10 +7,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.fittrackapp.fittrack_mobile.utils.navigation.NavRoute
-import com.fittrackapp.fittrack_mobile.utils.navigation.Navigator
+import com.fittrackapp.fittrack_mobile.navigation.NavRoute
+import com.fittrackapp.fittrack_mobile.navigation.Navigator
 
 data class NavItem(
     val route: String,

@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.utils.navigation
+package com.fittrackapp.fittrack_mobile.navigation
 
 sealed class NavRoute(val route: String) {
     data object Auth : NavRoute("auth")

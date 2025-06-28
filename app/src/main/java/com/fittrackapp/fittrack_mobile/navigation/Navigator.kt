@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.utils.navigation
+package com.fittrackapp.fittrack_mobile.navigation
 
 import android.annotation.SuppressLint
 import android.util.Log

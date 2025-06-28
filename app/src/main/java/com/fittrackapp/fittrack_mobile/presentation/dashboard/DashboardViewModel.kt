@@ -3,6 +3,7 @@ package com.fittrackapp.fittrack_mobile.presentation.dashboard
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
