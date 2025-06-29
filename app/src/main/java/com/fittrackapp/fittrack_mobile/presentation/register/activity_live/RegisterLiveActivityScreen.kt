@@ -27,7 +27,8 @@ fun RegisterLiveActivityScreen(viewModel: RegisterLiveActivityViewModel = hiltVi
 
     Column(
         Modifier
-            .padding(WindowInsets.systemBars.asPaddingValues())
+            .padding(WindowInsets.systemBars.asPaddingValues()),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
         MapSection(tracks = state.tracks, currentLocation = state.currentLocation)

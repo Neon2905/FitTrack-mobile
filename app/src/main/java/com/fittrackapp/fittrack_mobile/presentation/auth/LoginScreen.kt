@@ -21,7 +21,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 @Composable
 fun LoginScreen() {
     val viewModel: AuthViewModel = hiltViewModel()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    // Not yet required, but errors can waste ur time if u did
+    //val state by viewModel.state.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier
@@ -32,54 +34,8 @@ fun LoginScreen() {
         AuthSurface {
             LoginHeader()
             LoginInputFields(
-                state.username,
-                state.password,
-                onUsernameChanged = viewModel::onUsernameChanged,
-                onPasswordChanged = viewModel::onPasswordChanged
+                viewModel
             )
-
-            ElevatedButton(
-                onClick = viewModel::login,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                ),
-            ) {
-                if (state.isSigningIn) {
-                    Text("Signing in...")
-                } else {
-                    Text("Login")
-                }
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                HorizontalDivider(modifier = Modifier.weight(1f))
-                Text("Or login with", style = MaterialTheme.typography.labelMedium)
-                HorizontalDivider(modifier = Modifier.weight(1f))
-            }
-
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SocialButton("Google") { /* TODO */ }
-                SocialButton("Facebook") { /* TODO */ }
-            }
-
-            Row {
-                Text(text = "Don't have an account?")
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "Sign Up",
-                    color = Color.Blue,
-                    modifier = Modifier.clickable {
-                        viewModel.onIsOnSignInChanged(false)
-                    }
-                )
-            }
 
             LoginFooter()
         }

@@ -35,6 +35,10 @@ class AuthViewModel @Inject constructor(
         _state.value = _state.value.copy(password = value)
     }
 
+    fun onRemeberMeToggled(value: Boolean) {
+        _state.value = _state.value.copy(rememberMe = value)
+    }
+
     fun login() {
         // TODO: this line below ain't properly working
         if(state.value.isSigningIn)

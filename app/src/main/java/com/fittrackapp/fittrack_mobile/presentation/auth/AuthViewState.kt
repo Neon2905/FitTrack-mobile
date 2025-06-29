@@ -6,5 +6,6 @@ data class AuthViewState(
     val password: String = "",
     val errorMessage: String? = null,
     val isRegistering: Boolean = false,
-    val isOnSignIn: Boolean = true
+    val isOnSignIn: Boolean = true,
+    val rememberMe: Boolean = false
 )

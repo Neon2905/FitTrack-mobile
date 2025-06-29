@@ -20,23 +20,27 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
 
 @Composable
 fun DateList(
-    activities: List<Activity>,
-    currentActivity: Activity,
-    onSelect: (Activity) -> Unit = {}
+    viewModel: DashboardViewModel = hiltViewModel()
 ) {
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     LazyRow {
-        items(activities) { activity ->
-            DateCard(activity, currentActivity, onSelect)
+        items(state.activities) { activity ->
+            DateCard(activity, state.currentActivity, viewModel::onActivitySelected)
         }
     }
 }
 
 @Composable
-fun DateCard(activity: Activity, currentActivity: Activity, onSelect: (Activity) -> Unit = {}) {
+fun DateCard(activity: Activity, currentActivity: Activity?, onSelect: (Activity) -> Unit = {}) {
     val localDate = activity.startTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
 
     Card(

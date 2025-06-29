@@ -14,9 +14,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.fittrackapp.fittrack_mobile.presentation.auth.AuthScreen
 import com.fittrackapp.fittrack_mobile.presentation.dashboard.DashboardScreen
-import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityScreen
 import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.fittrackapp.fittrack_mobile.presentation.ImportedScreen
+import com.fittrackapp.fittrack_mobile.presentation.activity.ActivityScreen
 import com.fittrackapp.fittrack_mobile.presentation.setting.SettingScreen
 
 @Composable
@@ -30,7 +31,7 @@ fun AppNavHost() {
 
     NavHost(
         navController = navController,
-        startDestination = NavRoute.Dashboard.route,
+        startDestination = NavRoute.ImportedScreen.route,
         enterTransition = { slideInHorizontally { it } + fadeIn() },
         exitTransition = { slideOutHorizontally { -it } + fadeOut() },
         popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
@@ -48,7 +49,7 @@ fun AppNavHost() {
             AuthScreen()
         }
         composable(
-            route = "Dashboard",
+            route = NavRoute.Dashboard.route,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
@@ -57,9 +58,10 @@ fun AppNavHost() {
             }
         )
         { backStackEntry ->
+            // TODO
             val viewModel: RegisterLiveActivityViewModel = hiltViewModel(backStackEntry)
-            RegisterLiveActivityScreen(viewModel)
-            //DashboardScreen()
+            //RegisterLiveActivityScreen(viewModel)
+            DashboardScreen()
         }
         composable(
             route = NavRoute.Settings.route,
@@ -76,6 +78,11 @@ fun AppNavHost() {
             }
         )
         {
+        }
+        composable(
+            route = NavRoute.ImportedScreen.route
+        ){
+            ActivityScreen()
         }
         // TODO: Add more routes here
     }

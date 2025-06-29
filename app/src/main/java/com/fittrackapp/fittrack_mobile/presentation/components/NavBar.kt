@@ -1,5 +1,7 @@
 package com.fittrackapp.fittrack_mobile.presentation
 
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
@@ -7,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import com.fittrackapp.fittrack_mobile.navigation.NavRoute
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
 
@@ -19,7 +22,7 @@ data class NavItem(
 val navItems = listOf(
     NavItem(NavRoute.Dashboard.route, Icons.Default.Home, "Home"),
     NavItem(NavRoute.Auth.route, Icons.AutoMirrored.Filled.Assignment, "Activity"),
-    NavItem(NavRoute.Settings.route, Icons.Default.InsertChart, "Statistics"),
+    NavItem(NavRoute.ImportedScreen.route, Icons.Default.InsertChart, "Statistics"),
     NavItem(NavRoute.Settings.route, Icons.Default.Settings, "Settings")
 )
 
@@ -29,7 +32,6 @@ fun NavBar(
 ) {
     val currentRoute by Navigator.currentRoute.collectAsState()
 
-    //TODO: Fix the issue with the currentRoute not being recognized
     if (currentRoute != NavRoute.Auth.route) {
 
         NavigationBar(modifier = modifier) {

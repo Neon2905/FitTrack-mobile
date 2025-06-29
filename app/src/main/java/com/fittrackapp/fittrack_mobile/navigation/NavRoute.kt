@@ -5,4 +5,5 @@ sealed class NavRoute(val route: String) {
     data object Dashboard : NavRoute("dashboard")
     data object Settings : NavRoute("settings")
     data object Statistics : NavRoute("statistics")
+    data object ImportedScreen : NavRoute("imported")
 }
