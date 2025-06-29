@@ -14,7 +14,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.fittrackapp.fittrack_mobile.presentation.auth.AuthScreen
 import com.fittrackapp.fittrack_mobile.presentation.dashboard.DashboardScreen
-import com.fittrackapp.fittrack_mobile.presentation.register.RegisterWalkingScreen
+import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityScreen
+import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.fittrackapp.fittrack_mobile.presentation.setting.SettingScreen
 
 @Composable
@@ -46,7 +48,7 @@ fun AppNavHost() {
             AuthScreen()
         }
         composable(
-            route = NavRoute.Dashboard.route,
+            route = "Dashboard",
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
@@ -54,8 +56,10 @@ fun AppNavHost() {
                 )
             }
         )
-        {
-            DashboardScreen()
+        { backStackEntry ->
+            val viewModel: RegisterLiveActivityViewModel = hiltViewModel(backStackEntry)
+            RegisterLiveActivityScreen(viewModel)
+            //DashboardScreen()
         }
         composable(
             route = NavRoute.Settings.route,
@@ -63,7 +67,7 @@ fun AppNavHost() {
             SettingScreen()
         }
         composable(
-            route = NavRoute.Dashboard.route,
+            route = NavRoute.Statistics.route,
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
@@ -72,7 +76,6 @@ fun AppNavHost() {
             }
         )
         {
-            RegisterWalkingScreen()
         }
         // TODO: Add more routes here
     }

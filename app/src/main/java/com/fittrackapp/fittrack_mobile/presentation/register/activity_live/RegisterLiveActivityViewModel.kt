@@ -22,11 +22,11 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
-class RegisterWalkingViewModel @Inject constructor(
+class RegisterLiveActivityViewModel @Inject constructor(
     private val app: Application
 ) : ViewModel(), SensorEventListener {
 
-    private val _state = MutableStateFlow(RegisterWalkingViewState())
+    private val _state = MutableStateFlow(RegisterLiveActivityViewState())
     val state = _state.asStateFlow()
 
     private var sensorManager: SensorManager? = null
@@ -65,7 +65,7 @@ class RegisterWalkingViewModel @Inject constructor(
     fun start() {
         if (!_state.value.isLive) {
             // First start: reset state and add first track
-            _state.value = RegisterWalkingViewState(
+            _state.value = RegisterLiveActivityViewState(
                 isLive = true,
                 onPause = false,
                 targetDuration = _state.value.targetDuration,
@@ -92,7 +92,7 @@ class RegisterWalkingViewModel @Inject constructor(
     }
 
     fun stop() {
-        _state.value = RegisterWalkingViewState(targetDuration = _state.value.targetDuration)
+        _state.value = RegisterLiveActivityViewState(targetDuration = _state.value.targetDuration)
         stopSensors()
         stopLocationUpdates()
         isTimerRunning = false
