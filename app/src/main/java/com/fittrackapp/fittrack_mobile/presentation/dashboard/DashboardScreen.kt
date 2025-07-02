@@ -41,7 +41,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
             .padding(horizontal = 24.dp, vertical = 20.dp),
     ) {
         item {
-            Header(currentDate ?: java.time.LocalDate.now())
+            Header(currentDate ?: java.time.LocalDate.now(), state.authUser?.username)
 
             Spacer(modifier = Modifier.height(16.dp))
 

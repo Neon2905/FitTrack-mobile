@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fittrackapp.fittrack_mobile.domain.repository.AuthRepository
+import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
 import com.fittrackapp.fittrack_mobile.utils.Toast
 import com.fittrackapp.fittrack_mobile.navigation.NavRoute
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val securePrefsRepository: SecurePrefsRepository
 ) : ViewModel() {
 
     // TODO: remove hardcoded values later
@@ -50,6 +52,7 @@ class AuthViewModel @Inject constructor(
             authRepository.login(state.value.username, state.value.password)
                 .onRight { authUser ->
                     Log.i("AuthViewModel", "Login successful: $authUser")
+                    securePrefsRepository.saveAuthUser(authUser)
                     Navigator.navigate(NavRoute.Dashboard.route);
                 }.onLeft { error ->
                     _state.update {

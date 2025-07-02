@@ -9,6 +9,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,12 +17,24 @@ import com.fittrackapp.fittrack_mobile.presentation.auth.AuthScreen
 import com.fittrackapp.fittrack_mobile.presentation.dashboard.DashboardScreen
 import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.fittrackapp.fittrack_mobile.di.SecurePrefsRepositoryEntryPoint
+import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
 import com.fittrackapp.fittrack_mobile.presentation.ImportedScreen
 import com.fittrackapp.fittrack_mobile.presentation.activity.ActivityScreen
+import com.fittrackapp.fittrack_mobile.presentation.dashboard.DashboardViewModel
+import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityScreen
 import com.fittrackapp.fittrack_mobile.presentation.setting.SettingScreen
+import dagger.hilt.android.EntryPointAccessors
+import javax.inject.Inject
+
 
 @Composable
 fun AppNavHost() {
+
+    // Initialize the app vm
+    val dashboardViewModel: DashboardViewModel = hiltViewModel()
+    val registerLiveActivityViewModel: RegisterLiveActivityViewModel = hiltViewModel()
+
     val navController = rememberNavController()
     SyncNavigator(navController)
 
@@ -29,9 +42,19 @@ fun AppNavHost() {
         Navigator.setController(navController)
     }
 
+    val context = LocalContext.current.applicationContext
+    val securePrefsRepository = EntryPointAccessors.fromApplication(
+        context,
+        SecurePrefsRepositoryEntryPoint::class.java
+    ).securePrefsRepository()
+
     NavHost(
         navController = navController,
-        startDestination = NavRoute.ImportedScreen.route,
+        startDestination =
+            if (securePrefsRepository.getAuthUser() == null)
+                NavRoute.Auth.route
+            else
+                NavRoute.ImportedScreen.route,
         enterTransition = { slideInHorizontally { it } + fadeIn() },
         exitTransition = { slideOutHorizontally { -it } + fadeOut() },
         popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
@@ -48,6 +71,7 @@ fun AppNavHost() {
         ) {
             AuthScreen()
         }
+
         composable(
             route = NavRoute.Dashboard.route,
             enterTransition = {
@@ -57,17 +81,16 @@ fun AppNavHost() {
                 )
             }
         )
-        { backStackEntry ->
-            // TODO
-            val viewModel: RegisterLiveActivityViewModel = hiltViewModel(backStackEntry)
-            //RegisterLiveActivityScreen(viewModel)
-            DashboardScreen()
+        {
+            DashboardScreen(dashboardViewModel)
         }
+
         composable(
             route = NavRoute.Settings.route,
         ) {
             SettingScreen()
         }
+
         composable(
             route = NavRoute.Statistics.route,
             enterTransition = {
@@ -78,11 +101,19 @@ fun AppNavHost() {
             }
         )
         {
+            //TODO
         }
+
         composable(
             route = NavRoute.ImportedScreen.route
-        ){
-            ActivityScreen()
+        ) {
+            ImportedScreen()
+        }
+
+        composable(
+            route = NavRoute.Register.LiveActivity.route,
+        ) {
+            RegisterLiveActivityScreen(registerLiveActivityViewModel)
         }
         // TODO: Add more routes here
     }

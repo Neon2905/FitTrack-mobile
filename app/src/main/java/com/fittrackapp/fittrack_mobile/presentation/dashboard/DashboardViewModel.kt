@@ -3,7 +3,9 @@ package com.fittrackapp.fittrack_mobile.presentation.dashboard
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.fittrackapp.fittrack_mobile.data.local.dao.ActivityDao
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
+import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
 import com.fittrackapp.fittrack_mobile.presentation.auth.AuthViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,8 +13,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
+import javax.inject.Inject
 
-class DashboardViewModel : ViewModel() {
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
+    private val securePrefsRepository: SecurePrefsRepository
+)  : ViewModel() {
 
     private val _state = MutableStateFlow(
         DashboardViewState(
@@ -32,6 +38,7 @@ class DashboardViewModel : ViewModel() {
                     calories = (400..900).random().toFloat()
                 )
             },
+            authUser = securePrefsRepository.getAuthUser()
         )
     )
     val state = _state.asStateFlow()

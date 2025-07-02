@@ -10,16 +10,27 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
+import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
 import com.fittrackapp.fittrack_mobile.navigation.AppNavHost
+import com.fittrackapp.fittrack_mobile.navigation.Navigator
 import com.fittrackapp.fittrack_mobile.presentation.NavBar
 import com.fittrackapp.fittrack_mobile.presentation.theme.FitTrackMobileTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity() : ComponentActivity() {
+    @Inject
+    lateinit var securePrefsRepository: SecurePrefsRepository
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Navigator.init(
+            securePrefsRepository
+        )
 
         // Permission check (already present)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
