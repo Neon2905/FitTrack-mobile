@@ -4,7 +4,7 @@ package com.fittrackapp.fittrack_mobile.domain.model
 data class NetworkError(
     val error: ApiError,
     val message: String = error.message,
-    val t: Throwable? = null
+    val t: Throwable? = null // I just run out of ideas on how to name this properly
 )
 
 sealed class ApiError(open val message: String) {
