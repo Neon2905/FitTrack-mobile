@@ -57,7 +57,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation (libs.accompanist.systemuicontroller.v0332alpha)
+    implementation(libs.accompanist.systemuicontroller.v0332alpha)
     implementation(libs.androidx.material.icons.extended.android)
     implementation(libs.androidx.credentials)
     implementation("com.google.android.gms:play-services-location:21.3.0")
@@ -73,11 +73,14 @@ dependencies {
     // Arrow
     implementation(libs.arrow.core)
     implementation(libs.arrow.fx.coroutines)
+
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
     //Coil
     implementation(libs.coil.compose)
+
     //dagger hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
@@ -89,4 +92,12 @@ dependencies {
     //Google Maps
     implementation("com.google.maps.android:maps-compose:2.11.4")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+
+    //Shared Preferences
+    implementation("androidx.security:security-crypto:1.1.0-beta01")
+
+    // DataStore SQL Room
+    implementation("androidx.room:room-runtime:2.7.2")
+    kapt("androidx.room:room-compiler:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2")
 }
