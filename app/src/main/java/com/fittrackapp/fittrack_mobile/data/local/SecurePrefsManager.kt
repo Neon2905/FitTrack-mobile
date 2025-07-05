@@ -2,7 +2,6 @@ package com.fittrackapp.fittrack_mobile.data.local
 
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
-<<<<<<< HEAD
 import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
 import com.fittrackapp.fittrack_mobile.domain.model.AuthUser
@@ -12,15 +11,6 @@ import okhttp3.HttpUrl
 
 class SecurePrefsManager(context: Context) {
     private val masterKey = MasterKey.Builder(context)
-=======
-import androidx.security.crypto.MasterKeys
-import com.google.gson.Gson
-import com.fittrackapp.fittrack_mobile.domain.model.AuthUser
-import androidx.core.content.edit
-
-class SecurePrefsManager(context: Context) {
-    private val masterKey = androidx.security.crypto.MasterKey.Builder(context)
->>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
         .setKeyScheme(androidx.security.crypto.MasterKey.KeyScheme.AES256_GCM)
         .build()
     private val prefs = EncryptedSharedPreferences.create(
@@ -32,7 +22,6 @@ class SecurePrefsManager(context: Context) {
     )
     private val gson = Gson()
 
-<<<<<<< HEAD
     fun saveCookies(cookies: List<Cookie>) {
         val serialized = cookies.joinToString("||") { it.toString() }
         prefs.edit { putString("cookies", serialized) }
@@ -46,8 +35,6 @@ class SecurePrefsManager(context: Context) {
             .filter { it.matches(url) }  // Ensures only matching cookies are returned
     }
 
-=======
->>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
     fun saveAuthUser(user: AuthUser) {
         prefs.edit { putString("auth_user", gson.toJson(user)) }
     }

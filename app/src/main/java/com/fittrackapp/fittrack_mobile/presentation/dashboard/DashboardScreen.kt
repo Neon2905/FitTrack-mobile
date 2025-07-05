@@ -52,22 +52,8 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
             .padding(horizontal = 24.dp, vertical = 20.dp),
     ) {
         item {
-<<<<<<< HEAD
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
-=======
-            Header(currentDate ?: java.time.LocalDate.now(), state.authUser?.username)
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Activity Ring card
-            Card(
-                shape = RoundedCornerShape(16.dp),
-                elevation = elevatedCardElevation(4.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
->>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
             ) {
                 Header(currentDate ?: java.time.LocalDate.now(), viewModel.getUsername())
 

@@ -11,10 +11,6 @@ interface ActivityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(activity: ActivityEntity)
 
-<<<<<<< HEAD
     @Query("SELECT * FROM activity WHERE id = :id")
-=======
-    @Query("SELECT * FROM users WHERE id = :id")
->>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
     suspend fun getUserById(id: Int): ActivityEntity?
 }
