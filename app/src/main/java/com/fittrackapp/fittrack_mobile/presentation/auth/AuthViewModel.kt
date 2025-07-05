@@ -3,6 +3,7 @@ package com.fittrackapp.fittrack_mobile.presentation.auth
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
 import com.fittrackapp.fittrack_mobile.domain.repository.AuthRepository
 import com.fittrackapp.fittrack_mobile.utils.Toast
 import com.fittrackapp.fittrack_mobile.navigation.NavRoute
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val securePrefsManager: SecurePrefsManager
 ) : ViewModel() {
 
     // TODO: remove hardcoded values later
@@ -41,7 +43,7 @@ class AuthViewModel @Inject constructor(
 
     fun login() {
         // TODO: this line below ain't properly working
-        if(state.value.isSigningIn)
+        if (state.value.isSigningIn)
             return
 
         viewModelScope.launch {
@@ -50,6 +52,7 @@ class AuthViewModel @Inject constructor(
             authRepository.login(state.value.username, state.value.password)
                 .onRight { authUser ->
                     Log.i("AuthViewModel", "Login successful: $authUser")
+                    securePrefsManager.saveAuthUser(authUser)
                     Navigator.navigate(NavRoute.Dashboard.route);
                 }.onLeft { error ->
                     _state.update {
@@ -64,7 +67,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun signup() {
-        if(state.value.isRegistering)
+        if (state.value.isRegistering)
             return
 
         viewModelScope.launch {

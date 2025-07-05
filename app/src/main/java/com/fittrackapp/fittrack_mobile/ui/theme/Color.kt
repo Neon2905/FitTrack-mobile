@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.presentation.theme
+package com.fittrackapp.fittrack_mobile.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -20,6 +20,6 @@ val nightDark = Color(0xFF403757)
 val purple = Color(0xFF9b11ba)
 val orange = Color(0xFFdb660d)
 val redOrange = Color(0xFFe84a23)
-val green = Color(0xFF0ddb25)
+val green = Color(0xFF7ffc9b)
 val blue = Color(0xFF140ddb)
 val brightBlue = Color(0xFF027cf5)

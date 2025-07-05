@@ -20,5 +20,5 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun profideActivityRepository(impl: ActivityRepositoryImpl): ActivityRepository
+    abstract fun provideActivityRepository(impl: ActivityRepositoryImpl): ActivityRepository
 }

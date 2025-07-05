@@ -21,7 +21,7 @@ data class NavItem(
 
 val navItems = listOf(
     NavItem(NavRoute.Dashboard.route, Icons.Default.Home, "Home"),
-    NavItem(NavRoute.Auth.route, Icons.AutoMirrored.Filled.Assignment, "Activity"),
+    NavItem(NavRoute.Register.LiveActivity.route, Icons.AutoMirrored.Filled.Assignment, "Activity"),
     NavItem(NavRoute.ImportedScreen.route, Icons.Default.InsertChart, "Statistics"),
     NavItem(NavRoute.Settings.route, Icons.Default.Settings, "Settings")
 )
@@ -34,7 +34,7 @@ fun NavBar(
 
     if (currentRoute != NavRoute.Auth.route) {
 
-        NavigationBar(modifier = modifier) {
+        NavigationBar(modifier = modifier.height(IntrinsicSize.Min)) {
             navItems.forEach { item ->
                 NavigationBarItem(
                     selected = currentRoute == item.route,

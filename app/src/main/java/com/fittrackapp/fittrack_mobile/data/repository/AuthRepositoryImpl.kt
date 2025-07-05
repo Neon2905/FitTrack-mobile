@@ -21,8 +21,7 @@ class AuthRepositoryImpl @Inject constructor(
         password: String
     ): Either<NetworkError, AuthUser> {
         return Either.catch {
-            val request = LoginRequest(username, password)
-            authApi.login(request)
+            authApi.login(LoginRequest(username, password))
         }.mapLeft {
             Log.e("AuthRepositoryImpl", "Login failed: " + it.message, it)
             it.toGeneralError()

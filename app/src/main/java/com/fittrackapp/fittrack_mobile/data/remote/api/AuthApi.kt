@@ -6,12 +6,13 @@ import com.fittrackapp.fittrack_mobile.domain.model.AuthUser
 import retrofit2.http.Body
 import retrofit2.http.POST
 
+/* WARNING: Adding even '/' at the start of api route might fail connection */
 interface AuthApi {
 
-    @POST("auth/login")
+    @POST("login")
     suspend fun login(@Body request: LoginRequest): AuthUser
 
-    @POST("auth/register")
+    @POST("register")
     suspend fun register(@Body request: RegisterRequest): AuthUser
 
     suspend fun logout(): Boolean

@@ -1,6 +1,10 @@
 package com.fittrackapp.fittrack_mobile.presentation.dashboard
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -14,14 +18,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fittrackapp.fittrack_mobile.navigation.NavRoute
+import com.fittrackapp.fittrack_mobile.navigation.Navigator
 import com.fittrackapp.fittrack_mobile.presentation.TrendItem
 import java.time.ZoneId
 
@@ -41,181 +52,244 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
             .padding(horizontal = 24.dp, vertical = 20.dp),
     ) {
         item {
-            Header(currentDate ?: java.time.LocalDate.now())
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Activity Ring card
-            Card(
-                shape = RoundedCornerShape(16.dp),
-                elevation = elevatedCardElevation(4.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                Header(currentDate ?: java.time.LocalDate.now(), viewModel.getUsername())
+
+                OutlinedButton(
+                    onClick = {
+                        Navigator.navigate(NavRoute.Register.LiveActivity.route)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(70.dp),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                {
+                    Text(
+                        "Start Activity",
+                    )
+                }
+
+                // Activity Ring card
+                Card(
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = elevatedCardElevation(4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(160.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 16.dp, top = 16.dp)
+                        ) {
+                            Text(
+                                text = "Activity Ring",
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            )
+                            ProgressRing(
+                                progress = state.currentActivity?.calories?.div(1000f) ?: 0f,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .align(Alignment.CenterHorizontally),
+                                strokeWidth = 16.dp,
+                                backgroundColor = Color.Gray.copy(alpha = 0.2f)
+                            )
+                        }
+
+                        Text(
+                            modifier = Modifier
+                                .padding(end = 16.dp)
+                                .align(Alignment.CenterVertically),
+                            text = buildAnnotatedString {
+                                withStyle(
+                                    style = MaterialTheme.typography.labelLarge.toSpanStyle()
+                                        .copy(fontWeight = FontWeight.ExtraBold)
+                                ) {
+                                    append("Progress\n")
+                                }
+                                withStyle(
+                                    style = MaterialTheme.typography.labelLarge.toSpanStyle().copy(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontWeight = FontWeight.ExtraBold
+                                    )
+                                ) {
+                                    append("${state.currentActivity?.calories}/500 CAL")
+                                }
+                            },
+                        )
+                    }
+                }
+
+                // Steps + Distance cards
                 Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(260.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = elevatedCardElevation(4.dp),
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                "Steps",
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            )
+                            Text(
+                                "325",
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            )
+                        }
+                    }
+
+                    Card(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = elevatedCardElevation(4.dp),
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                "Distance",
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            )
+                            Text(
+                                "0.10 KM",
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Blue
+                                )
+                            )
+                        }
+                    }
+                }
+
+                // Trends
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = elevatedCardElevation(4.dp),
                 ) {
                     Column(
-                        modifier = Modifier
+                        Modifier
                             .padding(start = 16.dp, top = 16.dp)
                     ) {
                         Text(
-                            text = "Activity Ring",
+                            "Trends",
                             style = MaterialTheme.typography.titleLarge.copy(
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.Bold
                             )
                         )
-                    }
 
-                    Text(
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .align(Alignment.CenterVertically),
-                        text = buildAnnotatedString {
-                            withStyle(
-                                style = MaterialTheme.typography.labelLarge.toSpanStyle()
-                                    .copy(fontWeight = FontWeight.ExtraBold)
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Column(
+                            Modifier.padding(start = 10.dp, end = 50.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                append("Progress\n")
-                            }
-                            withStyle(
-                                style = MaterialTheme.typography.labelLarge.toSpanStyle().copy(
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontWeight = FontWeight.ExtraBold
+                                TrendItem(
+                                    icon = Icons.Default.KeyboardArrowUp,
+                                    label = "Progress",
+                                    value = "100CAL/DAY",
+                                    valueColor = Color(0xFF6A4FB3)
                                 )
-                            ) {
-                                append("${state.currentActivity?.calories}/500 CAL")
+                                TrendItem(
+                                    icon = Icons.Default.Nightlight,
+                                    label = "Sleep",
+                                    value = "6H/DAY",
+                                    valueColor = Color(0xFF6A4FB3)
+                                )
                             }
-                        },
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Steps + Distance cards
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(260.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = elevatedCardElevation(4.dp),
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            "Steps",
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                            )
-                        )
-                        Text(
-                            "325",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        )
-                    }
-                }
-
-                Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = elevatedCardElevation(4.dp),
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            "Distance",
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                            )
-                        )
-                        Text(
-                            "0.10 KM",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Blue
-                            )
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Trends
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
-                shape = RoundedCornerShape(16.dp),
-                elevation = elevatedCardElevation(4.dp),
-            ) {
-                Column(
-                    Modifier
-                        .padding(start = 16.dp, top = 16.dp)
-                ) {
-                    Text(
-                        "Trends",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Column(
-                        Modifier.padding(start = 10.dp, end = 50.dp),
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            TrendItem(
-                                icon = Icons.Default.KeyboardArrowUp,
-                                label = "Progress",
-                                value = "100CAL/DAY",
-                                valueColor = Color(0xFF6A4FB3)
-                            )
-                            TrendItem(
-                                icon = Icons.Default.Nightlight,
-                                label = "Sleep",
-                                value = "6H/DAY",
-                                valueColor = Color(0xFF6A4FB3)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            TrendItem(
-                                icon = Icons.Default.KeyboardArrowUp,
-                                label = "Distance",
-                                value = "1.2MI/DAY",
-                                valueColor = Color(0xFF3A80F2)
-                            )
-                            TrendItem(
-                                icon = Icons.AutoMirrored.Filled.DirectionsWalk,
-                                label = "Steps",
-                                value = "300/DAY",
-                                valueColor = Color(0xFF6A4FB3)
-                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                TrendItem(
+                                    icon = Icons.Default.KeyboardArrowUp,
+                                    label = "Distance",
+                                    value = "1.2MI/DAY",
+                                    valueColor = Color(0xFF3A80F2)
+                                )
+                                TrendItem(
+                                    icon = Icons.AutoMirrored.Filled.DirectionsWalk,
+                                    label = "Steps",
+                                    value = "300/DAY",
+                                    valueColor = Color(0xFF6A4FB3)
+                                )
+                            }
                         }
                     }
                 }
+
+                // Spacer to push content above the bottom navigation
+                Spacer(Modifier.padding(bottom = 50.dp))
             }
         }
     }
 }
 
+@Composable
+fun ProgressRing(
+    progress: Float,            // Between 0f and 1f
+    color: Color,
+    modifier: Modifier = Modifier,
+    strokeWidth: Dp = 16.dp,
+    backgroundColor: Color = Color.Gray.copy(alpha = 0.2f),
+) {
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress.coerceIn(0f, 1f),
+        animationSpec = tween(durationMillis = 800),
+        label = "ring-progress"
+    )
+
+    Canvas(modifier = modifier) {
+        val diameter = size.minDimension
+        val radius = diameter / 2f
+        val stroke = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
+
+        // Background ring
+        drawArc(
+            color = backgroundColor,
+            startAngle = -90f,
+            sweepAngle = 360f,
+            useCenter = false,
+            style = stroke
+        )
+
+        // Progress arc
+        drawArc(
+            color = color,
+            startAngle = -90f,
+            sweepAngle = 360f * animatedProgress,
+            useCenter = false,
+            style = stroke
+        )
+    }
+}

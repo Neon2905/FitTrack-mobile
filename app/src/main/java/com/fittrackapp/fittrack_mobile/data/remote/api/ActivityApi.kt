@@ -1,17 +1,15 @@
 package com.fittrackapp.fittrack_mobile.data.remote
 
-import com.fittrackapp.fittrack_mobile.data.model.LoginRequest
-import com.fittrackapp.fittrack_mobile.data.model.RegisterRequest
-import com.fittrackapp.fittrack_mobile.domain.model.AuthUser
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
+/* WARNING: Adding even '/' at the start of api route might fail connection */
 interface ActivityApi {
-    @GET("activity/get/all")
+    @GET("get/all")
     suspend fun getAll(): List<Activity>
 
-    @POST("activity/register")
+    @POST("register")
     suspend fun register(@Body request: Activity): Boolean
 }

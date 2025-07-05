@@ -3,6 +3,8 @@ package com.fittrackapp.fittrack_mobile.presentation.dashboard
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
+import com.fittrackapp.fittrack_mobile.data.local.dao.ActivityDao
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
 import com.fittrackapp.fittrack_mobile.presentation.auth.AuthViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,8 +13,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
+import javax.inject.Inject
 
-class DashboardViewModel : ViewModel() {
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
+    private val securePrefsManager: SecurePrefsManager
+)  : ViewModel() {
 
     private val _state = MutableStateFlow(
         DashboardViewState(
@@ -29,12 +35,17 @@ class DashboardViewModel : ViewModel() {
                     type = "walking",
                     steps = (100..12000).random(),
                     distance = (1..20).random().toFloat(),
-                    calories = (400..900).random().toFloat()
+                    calories = (400..500).random().toFloat()
                 )
             },
+            authUser = securePrefsManager.getAuthUser()
         )
     )
     val state = _state.asStateFlow()
+
+    fun getUsername(): String? {
+        return securePrefsManager.getAuthUser()?.username ?: "Guest"
+    }
 
     fun onActivitySelected(activity: Activity) {
         _state.value = _state.value.copy(currentActivity = activity)

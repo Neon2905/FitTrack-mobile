@@ -1,14 +1,13 @@
 [versions]
-accompanistSystemuicontroller = "0.27.0"
-accompanistSystemuicontrollerVersion = "0.33.2-alpha"
+accompanistSystemuicontrollerVersion = "0.36.0"
 agp = "8.11.0"
-arrowCore = "1.2.0"
-coilCompose = "2.5.0"
-converterGson = "2.9.0"
-hiltAndroid = "2.49"
-hiltAndroidCompiler = "2.49"
+arrowCore = "2.1.2"
+coilCompose = "2.7.0"
+converterGson = "3.0.0"
+hiltAndroid = "2.56.2"
+hiltAndroidCompiler = "2.56.2"
 hiltNavigationCompose = "1.2.0"
-kotlin = "2.0.21"
+kotlin = "2.2.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -18,15 +17,13 @@ activityCompose = "1.10.1"
 composeBom = "2025.06.01"
 loggingInterceptor = "4.12.0"
 materialIconsExtendedAndroid = "1.7.8"
-navigationRuntimeAndroid = "2.9.0"
-navigationComposeAndroid = "2.9.0"
-navigationeventAndroid = "1.0.0-alpha03"
-retrofit = "2.9.0"
+navigationRuntimeAndroid = "2.9.1"
+navigationComposeAndroid = "2.9.1"
+retrofit = "3.0.0"
 credentials = "1.5.0"
 playServicesMaps = "19.2.0"
 
 [libraries]
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 accompanist-systemuicontroller-v0332alpha = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontrollerVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
