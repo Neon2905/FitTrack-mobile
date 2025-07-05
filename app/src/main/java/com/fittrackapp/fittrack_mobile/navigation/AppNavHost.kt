@@ -22,6 +22,7 @@ import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivit
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
 import com.fittrackapp.fittrack_mobile.presentation.ExperimentScreen
+import com.fittrackapp.fittrack_mobile.presentation.StatisticsScreen
 import com.fittrackapp.fittrack_mobile.presentation.dashboard.DashboardViewModel
 import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityScreen
 import com.fittrackapp.fittrack_mobile.presentation.setting.SettingScreen
@@ -99,7 +100,7 @@ fun AppNavHost() {
             }
         )
         {
-            //TODO
+            StatisticsScreen()
         }
 
         composable(

@@ -1,13 +1,8 @@
-package com.fittrackapp.fittrack_mobile.presentation.dashboard
+package com.fittrackapp.fittrack_mobile.presentation
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
-import com.fittrackapp.fittrack_mobile.data.local.dao.ActivityDao
+import com.fittrackapp.fittrack_mobile.ActivityRecognitionManager
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
-import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
-import com.fittrackapp.fittrack_mobile.presentation.auth.AuthViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,12 +12,10 @@ import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(
-    private val securePrefsManager: SecurePrefsManager
-)  : ViewModel() {
-
+class StatisticsViewModel @Inject constructor(
+) : ViewModel() {
     private val _state = MutableStateFlow(
-        DashboardViewState(
+        StatisticsViewState(
             activities = List(30) { i ->
                 val date = Date.from(
                     LocalDate.now().minusDays((29 - i).toLong())
@@ -38,17 +31,12 @@ class DashboardViewModel @Inject constructor(
                     distance = (1..20).random().toFloat(),
                     calories = (400..500).random().toFloat()
                 )
-            },
+            }
         )
     )
-    val state = _state.asStateFlow()
+    public val state = _state.asStateFlow()
 
-    fun getUsername(): String? {
-        return securePrefsManager.getAuthUser()?.username ?: "Guest"
-    }
-
-    fun onActivitySelected(activity: Activity) {
+    public fun onActivitySelected(activity: Activity) {
         _state.value = _state.value.copy(currentActivity = activity)
-        Log.i("DashboardViewModel", "Selected activity: ${_state.value.currentActivity}")
     }
 }

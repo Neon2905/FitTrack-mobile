@@ -11,7 +11,7 @@ import okhttp3.HttpUrl
 
 class SecurePrefsManager(context: Context) {
     private val masterKey = MasterKey.Builder(context)
-        .setKeyScheme(androidx.security.crypto.MasterKey.KeyScheme.AES256_GCM)
+        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()
     private val prefs = EncryptedSharedPreferences.create(
         context,

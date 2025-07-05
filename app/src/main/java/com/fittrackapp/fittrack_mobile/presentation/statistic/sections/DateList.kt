@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.presentation.dashboard
+package com.fittrackapp.fittrack_mobile.presentation.statistic
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,10 +24,11 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
+import com.fittrackapp.fittrack_mobile.presentation.StatisticsViewModel
 
 @Composable
 fun DateList(
-    viewModel: DashboardViewModel = hiltViewModel()
+    viewModel: StatisticsViewModel = hiltViewModel()
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()

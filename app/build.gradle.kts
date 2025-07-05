@@ -87,6 +87,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     //charts
+    implementation("com.patrykandpatrick.vico:core:1.13.0")
+    implementation("com.patrykandpatrick.vico:compose:1.13.0")
     implementation("com.patrykandpatrick.vico:compose-m3:1.13.0")
 
     //Google Maps

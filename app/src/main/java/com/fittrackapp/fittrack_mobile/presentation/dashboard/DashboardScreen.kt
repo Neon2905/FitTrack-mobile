@@ -1,8 +1,5 @@
 package com.fittrackapp.fittrack_mobile.presentation.dashboard
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,25 +12,23 @@ import androidx.compose.material3.*
 import androidx.compose.material3.CardDefaults.elevatedCardElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fittrackapp.fittrack_mobile.navigation.NavRoute
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
 import com.fittrackapp.fittrack_mobile.presentation.TrendItem
+import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.patrykandpatrick.vico.core.entry.FloatEntry
+
 import java.time.ZoneId
 
 @Preview(showSystemUi = true, showBackground = true)
@@ -72,62 +67,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
                     )
                 }
 
-                // Activity Ring card
-                Card(
-                    shape = RoundedCornerShape(16.dp),
-                    elevation = elevatedCardElevation(4.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(160.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(start = 16.dp, top = 16.dp)
-                        ) {
-                            Text(
-                                text = "Activity Ring",
-                                style = MaterialTheme.typography.titleLarge.copy(
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            )
-                            ProgressRing(
-                                progress = state.currentActivity?.calories?.div(1000f) ?: 0f,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .align(Alignment.CenterHorizontally),
-                                strokeWidth = 16.dp,
-                                backgroundColor = Color.Gray.copy(alpha = 0.2f)
-                            )
-                        }
-
-                        Text(
-                            modifier = Modifier
-                                .padding(end = 16.dp)
-                                .align(Alignment.CenterVertically),
-                            text = buildAnnotatedString {
-                                withStyle(
-                                    style = MaterialTheme.typography.labelLarge.toSpanStyle()
-                                        .copy(fontWeight = FontWeight.ExtraBold)
-                                ) {
-                                    append("Progress\n")
-                                }
-                                withStyle(
-                                    style = MaterialTheme.typography.labelLarge.toSpanStyle().copy(
-                                        color = MaterialTheme.colorScheme.primary,
-                                        fontWeight = FontWeight.ExtraBold
-                                    )
-                                ) {
-                                    append("${state.currentActivity?.calories}/500 CAL")
-                                }
-                            },
-                        )
-                    }
-                }
+                ActivityRingCard(viewModel)
 
                 // Steps + Distance cards
                 Row(
@@ -157,6 +97,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             )
+
                         }
                     }
 
@@ -180,6 +121,23 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
                                     fontWeight = FontWeight.Bold,
                                     color = Color.Blue
                                 )
+                            )
+
+                            val entries = listOf(
+                                FloatEntry(0f, 10f),
+                                FloatEntry(1f, 30f),
+                                FloatEntry(2f, 20f),
+                                FloatEntry(3f, 40f),
+                                FloatEntry(4f, 15f)
+                            )
+
+                            val modelProducer = remember { ChartEntryModelProducer(entries) }
+
+                            Chart(
+                                chart = com.patrykandpatrick.vico.compose.chart.line.lineChart(),
+                                chartModelProducer = modelProducer,
+                                startAxis = rememberStartAxis(),
+                                bottomAxis = rememberBottomAxis(),
                             )
                         }
                     }
@@ -252,44 +210,5 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
                 Spacer(Modifier.padding(bottom = 50.dp))
             }
         }
-    }
-}
-
-@Composable
-fun ProgressRing(
-    progress: Float,            // Between 0f and 1f
-    color: Color,
-    modifier: Modifier = Modifier,
-    strokeWidth: Dp = 16.dp,
-    backgroundColor: Color = Color.Gray.copy(alpha = 0.2f),
-) {
-    val animatedProgress by animateFloatAsState(
-        targetValue = progress.coerceIn(0f, 1f),
-        animationSpec = tween(durationMillis = 800),
-        label = "ring-progress"
-    )
-
-    Canvas(modifier = modifier) {
-        val diameter = size.minDimension
-        val radius = diameter / 2f
-        val stroke = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
-
-        // Background ring
-        drawArc(
-            color = backgroundColor,
-            startAngle = -90f,
-            sweepAngle = 360f,
-            useCenter = false,
-            style = stroke
-        )
-
-        // Progress arc
-        drawArc(
-            color = color,
-            startAngle = -90f,
-            sweepAngle = 360f * animatedProgress,
-            useCenter = false,
-            style = stroke
-        )
     }
 }

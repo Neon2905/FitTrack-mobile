@@ -6,5 +6,4 @@ import com.fittrackapp.fittrack_mobile.domain.model.AuthUser
 data class DashboardViewState(
     val activities: List<Activity>,
     var currentActivity: Activity? = activities.getOrNull(0),
-    val authUser: AuthUser? = null,
 )
