@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
+<<<<<<< HEAD
+=======
+import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
 import com.fittrackapp.fittrack_mobile.navigation.AppNavHost
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
 import com.fittrackapp.fittrack_mobile.presentation.NavBar
@@ -23,14 +27,22 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity() : ComponentActivity() {
     @Inject
+<<<<<<< HEAD
     lateinit var securePrefsManager: SecurePrefsManager
+=======
+    lateinit var securePrefsRepository: SecurePrefsRepository
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         Navigator.init(
+<<<<<<< HEAD
             securePrefsManager
+=======
+            securePrefsRepository
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
         )
 
         // Permission check (already present)

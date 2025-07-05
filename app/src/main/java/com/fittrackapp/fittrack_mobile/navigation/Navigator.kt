@@ -2,17 +2,28 @@ package com.fittrackapp.fittrack_mobile.navigation
 
 import android.annotation.SuppressLint
 import androidx.navigation.NavHostController
+<<<<<<< HEAD
 import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
+=======
+import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 object Navigator {
+<<<<<<< HEAD
     lateinit var securePrefsManager: SecurePrefsManager
 
     fun init(securePrefsManager: SecurePrefsManager) {
         this.securePrefsManager = securePrefsManager
+=======
+    lateinit var securePrefsRepository: SecurePrefsRepository
+
+    fun init(securePrefsRepository: SecurePrefsRepository) {
+        this.securePrefsRepository = securePrefsRepository
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -35,7 +46,11 @@ object Navigator {
             return
 
         // Prevent navigation to Auth route if user is already authenticated
+<<<<<<< HEAD
         if (route == NavRoute.Auth.route && securePrefsManager.getAuthUser() != null)
+=======
+        if (route == NavRoute.Auth.route && securePrefsRepository.getAuthUser() != null)
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
             return
 
         navController?.navigate(route)

@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+<<<<<<< HEAD
 import androidx.compose.ui.Modifier
+=======
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,8 +23,15 @@ import com.fittrackapp.fittrack_mobile.presentation.auth.AuthScreen
 import com.fittrackapp.fittrack_mobile.presentation.dashboard.DashboardScreen
 import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+<<<<<<< HEAD
 import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
 import com.fittrackapp.fittrack_mobile.presentation.ExperimentScreen
+=======
+import com.fittrackapp.fittrack_mobile.di.SecurePrefsRepositoryEntryPoint
+import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
+import com.fittrackapp.fittrack_mobile.presentation.ImportedScreen
+import com.fittrackapp.fittrack_mobile.presentation.activity.ActivityScreen
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
 import com.fittrackapp.fittrack_mobile.presentation.dashboard.DashboardViewModel
 import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityScreen
 import com.fittrackapp.fittrack_mobile.presentation.setting.SettingScreen
@@ -31,7 +41,10 @@ import javax.inject.Inject
 
 @Composable
 fun AppNavHost() {
+<<<<<<< HEAD
     val securePrefsManager = SecurePrefsManager(LocalContext.current.applicationContext)
+=======
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
 
     // Initialize the app vm
     val dashboardViewModel: DashboardViewModel = hiltViewModel()
@@ -45,14 +58,28 @@ fun AppNavHost() {
     }
 
     val context = LocalContext.current.applicationContext
+<<<<<<< HEAD
+=======
+    val securePrefsRepository = EntryPointAccessors.fromApplication(
+        context,
+        SecurePrefsRepositoryEntryPoint::class.java
+    ).securePrefsRepository()
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
 
     NavHost(
         navController = navController,
         startDestination =
+<<<<<<< HEAD
             if (securePrefsManager.getAuthUser() == null)
                 NavRoute.Auth.route
             else
                 NavRoute.Dashboard.route,
+=======
+            if (securePrefsRepository.getAuthUser() == null)
+                NavRoute.Auth.route
+            else
+                NavRoute.ImportedScreen.route,
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
         enterTransition = { slideInHorizontally { it } + fadeIn() },
         exitTransition = { slideOutHorizontally { -it } + fadeOut() },
         popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
@@ -105,7 +132,11 @@ fun AppNavHost() {
         composable(
             route = NavRoute.ImportedScreen.route
         ) {
+<<<<<<< HEAD
             ExperimentScreen()
+=======
+            ImportedScreen()
+>>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
         }
 
         composable(
