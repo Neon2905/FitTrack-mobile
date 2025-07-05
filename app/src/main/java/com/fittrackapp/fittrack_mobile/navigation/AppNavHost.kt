@@ -105,11 +105,7 @@ fun AppNavHost() {
         composable(
             route = NavRoute.ImportedScreen.route
         ) {
-<<<<<<< HEAD
             ExperimentScreen()
-=======
-            ImportedScreen()
->>>>>>> e9395b67bc9ea21fd1b762fcf0316bbe8b74d41a
         }
 
         composable(

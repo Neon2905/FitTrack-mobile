@@ -7,7 +7,6 @@ sealed class NavRoute(val route: String) {
     data object Statistics : NavRoute("statistics")
     data object ImportedScreen : NavRoute("imported")
 
-
     data object Register {
         data object LiveActivity : NavRoute("register/live_activity")
     }
