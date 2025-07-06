@@ -42,6 +42,8 @@ android {
 }
 
 dependencies {
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -62,7 +64,6 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation(libs.play.services.maps)
-    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -102,4 +103,5 @@ dependencies {
     implementation("androidx.room:room-runtime:2.7.2")
     kapt("androidx.room:room-compiler:2.7.2")
     implementation("androidx.room:room-ktx:2.7.2")
+    implementation(kotlin("test"))
 }

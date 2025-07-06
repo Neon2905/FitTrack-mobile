@@ -45,15 +45,13 @@ fun AppNavHost() {
         Navigator.setController(navController)
     }
 
-    val context = LocalContext.current.applicationContext
-
     NavHost(
         navController = navController,
         startDestination =
             if (securePrefsManager.getAuthUser() == null)
                 NavRoute.Auth.route
             else
-                NavRoute.Dashboard.route,
+                NavRoute.Register.LiveActivity.route,
         enterTransition = { slideInHorizontally { it } + fadeIn() },
         exitTransition = { slideOutHorizontally { -it } + fadeOut() },
         popEnterTransition = { slideInHorizontally { -it } + fadeIn() },

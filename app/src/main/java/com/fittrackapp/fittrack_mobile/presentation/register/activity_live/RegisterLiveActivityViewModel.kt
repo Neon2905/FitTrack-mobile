@@ -1,6 +1,7 @@
 package com.fittrackapp.fittrack_mobile.presentation.register
 
 import android.Manifest
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
@@ -9,6 +10,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Location
+import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,14 +22,36 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.os.CountDownTimer
+import android.util.Log
+import com.fittrackapp.fittrack_mobile.utils.CalorieUtils.calculateCalories
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
+
 
 @HiltViewModel
 class RegisterLiveActivityViewModel @Inject constructor(
     private val app: Application
 ) : ViewModel(), SensorEventListener {
-
     private val _state = MutableStateFlow(RegisterLiveActivityViewState())
     val state = _state.asStateFlow()
+
+    private fun getInitialTargetValue(targetType: String): Double = when (targetType) {
+        "distance" -> 1000.0 // meters
+        "steps" -> 500.0
+        "duration" -> 5.0 // minutes
+        "calorie" -> 100.0
+        else -> 1.0
+    }
+
+    init {
+        _state.value = _state.value.copy(
+            targetType = "distance",
+            targetValue = getInitialTargetValue("distance")
+        )
+    }
 
     private var sensorManager: SensorManager? = null
     private var stepSensor: Sensor? = null
@@ -42,7 +66,7 @@ class RegisterLiveActivityViewModel @Inject constructor(
         stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
     }
 
-    suspend fun fetchInitialLocation() {
+    fun fetchInitialLocation() {
         val hasFineLocation = ContextCompat.checkSelfPermission(
             app,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -61,15 +85,20 @@ class RegisterLiveActivityViewModel @Inject constructor(
         }
     }
 
-    @androidx.annotation.RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
+    fun onTargetTypeChange(newType: String) {
+        _state.value = _state.value.copy(
+            targetType = newType,
+            targetValue = getInitialTargetValue(newType)
+        )
+    }
+
+    @RequiresPermission(anyOf = [ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION])
     fun start() {
         if (!_state.value.isLive) {
             // First start: reset state and add first track
-            _state.value = RegisterLiveActivityViewState(
+            _state.value = _state.value.copy(
                 isLive = true,
                 onPause = false,
-                targetDuration = _state.value.targetDuration,
-                tracks = listOf(emptyList())
             )
         } else if (_state.value.onPause) {
             // Resume: add a new empty track
@@ -88,23 +117,48 @@ class RegisterLiveActivityViewModel @Inject constructor(
         _state.value = _state.value.copy(onPause = true)
         stopSensors()
         stopLocationUpdates()
+        countDownTimer?.cancel()
+        countDownTimer = null
         isTimerRunning = false
     }
 
     fun stop() {
-        _state.value = RegisterLiveActivityViewState(targetDuration = _state.value.targetDuration)
+        _state.value =
+            RegisterLiveActivityViewState(
+                targetValue = _state.value.targetValue,
+                targetType = _state.value.targetType
+            ) // Reset to initial state with target value preserved
         stopSensors()
         stopLocationUpdates()
+        countDownTimer?.cancel()
         isTimerRunning = false
     }
 
-    fun increaseTargetDuration() {
-        _state.value = _state.value.copy(targetDuration = _state.value.targetDuration + 60.seconds)
+    private fun getDelta(): Double {
+        return when (_state.value.targetType) {
+            "distance" -> 250.0 // meters
+            "steps" -> 250.0
+            "duration" -> 5.0 // minutes
+            "calorie" -> 50.0
+            else -> 1.0
+        }
     }
 
-    fun decreaseTargetDuration() {
-        val newTarget = (_state.value.targetDuration - 60.seconds).coerceAtLeast(0.seconds)
-        _state.value = _state.value.copy(targetDuration = newTarget)
+    fun increaseTargetValue() {
+        val delta: Double = getDelta()
+        _state.value = _state.value.copy(targetValue = _state.value.targetValue + delta)
+    }
+
+    fun decreaseTargetValue() {
+        val delta: Double = getDelta()
+        _state.value =
+            _state.value.copy(
+                targetValue =
+                    if (_state.value.targetValue > delta)
+                        _state.value.targetValue - delta
+                    else
+                        _state.value.targetValue
+            )
     }
 
     private fun startSensors() {
@@ -117,15 +171,21 @@ class RegisterLiveActivityViewModel @Inject constructor(
         sensorManager?.unregisterListener(this)
     }
 
-    @androidx.annotation.RequiresPermission(anyOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
+
+    /** IMPORTANT: If the app crashes when restarting timer, it's not my app that failed. Disable 'Live Edit' option in Android Studio.
+     It's still in beta and causes issues with long-running tasks like timers.**/
+    @RequiresPermission(anyOf = [ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION])
     private fun startLocationUpdates() {
+        // Always stop previous updates before starting new ones
+        stopLocationUpdates()
+
         val hasFineLocation = ContextCompat.checkSelfPermission(
             app,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
         val hasCoarseLocation = ContextCompat.checkSelfPermission(
             app,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
 
         if (hasFineLocation || hasCoarseLocation) {
@@ -168,24 +228,71 @@ class RegisterLiveActivityViewModel @Inject constructor(
         locationCallback = null
     }
 
+    fun getCurrentValue() = when (_state.value.targetType) {
+        "distance" -> _state.value.distance
+        "steps" -> _state.value.steps.toDouble()
+        "duration" -> _state.value.duration.inWholeSeconds.toDouble() / 60.0
+        "calorie" -> _state.value.calories
+        else -> 0.0
+    }
+
+    private var countDownTimer: CountDownTimer? = null
+
     private fun startTimer() {
         if (isTimerRunning) return
         isTimerRunning = true
-        viewModelScope.launch {
-            while (_state.value.isLive && !_state.value.onPause) {
-                delay(1000)
-                _state.value = _state.value.copy(
-                    duration = _state.value.duration + 1.seconds
+
+        countDownTimer = object : CountDownTimer(Long.MAX_VALUE, 500L) {
+            var lastSteps = 0
+            var lastDistance = 0.0
+            var lastDuration = 0L
+
+            override fun onTick(millisUntilFinished: Long) {
+                if (!_state.value.isLive || _state.value.onPause) {
+                    cancel()
+                    isTimerRunning = false
+                    return
+                }
+
+                val deltaDistance = _state.value.distance - lastDistance
+                val deltaSteps = _state.value.steps - lastSteps
+
+                val deltaCalorie = calculateCalories(
+                    deltaSteps,
+                    deltaDistance / 1000,
+                    0.5.toDuration(DurationUnit.SECONDS)
                 )
+                _state.value = _state.value.copy(
+                    duration = _state.value.duration + 500L.milliseconds,
+                    calories = (_state.value.calories + deltaCalorie)
+                )
+                if (getCurrentValue() >= _state.value.targetValue) {
+                    stop()
+                    _state.value = _state.value.copy(isTargetReached = true)
+                    cancel()
+                    isTimerRunning = false
+                    return
+                }
+
+                lastSteps = _state.value.steps
+                lastDistance = _state.value.distance
+                lastDuration = _state.value.duration.inWholeSeconds
             }
-            isTimerRunning = false
-        }
+
+            override fun onFinish() {
+                isTimerRunning = false
+            }
+        }.start()
     }
+
+    private var baseSteps: Int? = null
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
-            val steps = event.values[0].toInt()
-            _state.value = _state.value.copy(steps = steps)
+            val currentSteps = event.values[0].toInt()
+            if (baseSteps == null) baseSteps = currentSteps
+            val sessionSteps = currentSteps - (baseSteps ?: 0)
+            _state.value = _state.value.copy(steps = sessionSteps)
         }
     }
 
