@@ -1,8 +1,11 @@
 package com.fittrackapp.fittrack_mobile.data.remote
 
+import arrow.core.Either
 import com.fittrackapp.fittrack_mobile.data.model.LoginRequest
 import com.fittrackapp.fittrack_mobile.data.model.RegisterRequest
+import com.fittrackapp.fittrack_mobile.domain.model.ApiError
 import com.fittrackapp.fittrack_mobile.domain.model.AuthUser
+import com.fittrackapp.fittrack_mobile.domain.model.NetworkError
 import retrofit2.http.Body
 import retrofit2.http.POST
 

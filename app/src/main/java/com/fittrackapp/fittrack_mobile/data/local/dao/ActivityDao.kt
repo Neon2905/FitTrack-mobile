@@ -5,12 +5,19 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ActivityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(activity: ActivityEntity)
+    suspend fun add(activity: ActivityEntity)
 
     @Query("SELECT * FROM activity WHERE id = :id")
-    suspend fun getUserById(id: Int): ActivityEntity?
+    fun getUserById(id: Int): Flow<ActivityEntity?>
+
+    @Query("SELECT * FROM activity")
+    fun getAll(): Flow<List<ActivityEntity>>
+
+    @Query("DELETE FROM activity")
+    suspend fun deleteAll()
 }
