@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.presentation.register.activity_live.sections
+package com.fittrackapp.fittrack_mobile.presentation.register.activity_live
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

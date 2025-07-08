@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
+import com.fittrackapp.fittrack_mobile.data.remote.AuthApi
+import com.fittrackapp.fittrack_mobile.data.repository.AuthRepositoryImpl
 import com.fittrackapp.fittrack_mobile.domain.repository.AuthRepository
 import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
 import com.fittrackapp.fittrack_mobile.utils.Toast
@@ -30,12 +32,20 @@ class AuthViewModel @Inject constructor(
         _state.value = _state.value.copy(isOnSignIn = value)
     }
 
+    fun onEmailChanged(value: String) {
+        _state.value = _state.value.copy(email = value)
+    }
+
     fun onUsernameChanged(value: String) {
         _state.value = _state.value.copy(username = value)
     }
 
     fun onPasswordChanged(value: String) {
         _state.value = _state.value.copy(password = value)
+    }
+
+    fun onConfirmPasswordChanged(value: String) {
+        _state.value = _state.value.copy(confirmPassword = value)
     }
 
     fun onRemeberMeToggled(value: Boolean) {

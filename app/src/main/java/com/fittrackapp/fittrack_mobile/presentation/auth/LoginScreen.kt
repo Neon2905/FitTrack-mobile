@@ -24,20 +24,12 @@ fun LoginScreen() {
 
     // Not yet required, but errors can waste ur time if u did
     //val state by viewModel.state.collectAsStateWithLifecycle()
+    LoginHeader()
+    LoginInputFields(
+        viewModel
+    )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentAlignment = Alignment.BottomCenter,
-    ) {
-        AuthSurface {
-            LoginHeader()
-            LoginInputFields(
-                viewModel
-            )
+    Spacer(modifier = Modifier.height(16.dp))
 
-            LoginFooter()
-        }
-    }
+    LoginFooter()
 }

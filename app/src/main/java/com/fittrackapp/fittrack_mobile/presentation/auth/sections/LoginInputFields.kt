@@ -23,7 +23,7 @@ import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivit
 
 @Composable
 fun LoginInputFields(
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: AuthViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     // Username
@@ -55,12 +55,12 @@ fun LoginInputFields(
     }
 
     // Login button
-    Button(
+    ExtendedFloatingActionButton (
         onClick = viewModel::login,
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
-        shape = RoundedCornerShape(12.dp)
+        shape = MaterialTheme.shapes.large,
     ) {
         Text(
             text =

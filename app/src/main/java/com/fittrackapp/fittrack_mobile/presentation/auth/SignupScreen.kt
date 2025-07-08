@@ -23,65 +23,12 @@ fun SignupScreen() {
     val viewModel: AuthViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentAlignment = Alignment.BottomCenter,
-    ) {
-        AuthSurface {
-            SignupHeader()
-            SignupInputFields(
-                state.username,
-                state.password,
-                onUsernameChanged = viewModel::onUsernameChanged,
-                onPasswordChanged = viewModel::onPasswordChanged
-            )
+    SignupHeader()
+    SignupInputFields(
+        viewModel = viewModel
+    )
 
-            ElevatedButton(
-                onClick = viewModel::signup,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                ),
-            ) {
-                if (state.isRegistering) {
-                    Text("Signing Up...")
-                } else {
-                    Text("Sign Up")
-                }
-            }
+    Spacer(modifier = Modifier.height(16.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                HorizontalDivider(modifier = Modifier.weight(1f))
-                Text("Or signup with", style = MaterialTheme.typography.labelMedium)
-                HorizontalDivider(modifier = Modifier.weight(1f))
-            }
-
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                SocialButton("Google") { /* TODO */ }
-                SocialButton("Facebook") { /* TODO */ }
-            }
-
-            Row {
-                Text(text = "Already have an account?")
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "Sign In",
-                    color = Color.Blue,
-                    modifier = Modifier.clickable {
-                        viewModel.onIsOnSignInChanged(true)
-                    }
-                )
-            }
-
-            SignupFooter()
-        }
-    }
+    SignupFooter()
 }

@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.presentation.register.activity_live.sections
+package com.fittrackapp.fittrack_mobile.presentation.register.activity_live
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
