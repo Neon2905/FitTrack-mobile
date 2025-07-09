@@ -32,8 +32,7 @@ fun BottomSheetSection(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
-            .offset(y = (-10).dp),
+            .wrapContentHeight(),
         shape = MaterialTheme.shapes.large.copy(
             bottomEnd = CornerSize(0.dp),
             bottomStart = CornerSize(0.dp)
@@ -66,7 +65,5 @@ fun BottomSheetSection(
         if (state.errorMessage != null) {
             Text("Error: ${state.errorMessage}", color = MaterialTheme.colorScheme.error)
         }
-        Spacer(modifier = Modifier.height(16.dp))
-
     }
 }

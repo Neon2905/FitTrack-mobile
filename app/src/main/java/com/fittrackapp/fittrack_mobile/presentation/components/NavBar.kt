@@ -1,7 +1,9 @@
 package com.fittrackapp.fittrack_mobile.presentation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
@@ -32,23 +34,32 @@ fun NavBar(
 ) {
     val currentRoute by Navigator.currentRoute.collectAsState()
 
-    if (currentRoute != NavRoute.Auth.route) {
+    val canShow = currentRoute != NavRoute.Auth.route
 
-        NavigationBar(modifier = modifier.height(IntrinsicSize.Min)) {
-            navItems.forEach { item ->
-                NavigationBarItem(
-                    selected = currentRoute == item.route,
-                    onClick = {
-                        Navigator.navigate(item.route);
-                    },
-                    icon = {
-                        Icon(imageVector = item.icon, contentDescription = item.label)
-                    },
-                    label = { Text(text = item.label) },
-                    alwaysShowLabel = false
-                )
-            }
+    if (!canShow) {
+        // Return an empty box to avoid layout issues
+        return Box(
+            modifier = modifier
+                .height(0.dp)
+        )
+    }
+
+    NavigationBar(
+        modifier = modifier
+            .height(IntrinsicSize.Min),
+    ) {
+        navItems.forEach { item ->
+            NavigationBarItem(
+                selected = currentRoute == item.route,
+                onClick = {
+                    Navigator.navigate(item.route);
+                },
+                icon = {
+                    Icon(imageVector = item.icon, contentDescription = item.label)
+                },
+                label = { Text(text = item.label) },
+                alwaysShowLabel = false
+            )
         }
-
     }
 }

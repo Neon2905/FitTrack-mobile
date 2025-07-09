@@ -2,6 +2,7 @@ package com.fittrackapp.fittrack_mobile.presentation.auth
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.fittrackapp.fittrack_mobile.ui.theme.blue
 
 @Composable
 fun AuthSurface(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {

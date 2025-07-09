@@ -18,15 +18,13 @@ import com.fittrackapp.fittrack_mobile.navigation.Navigator
 import com.fittrackapp.fittrack_mobile.ui.theme.darkBlue
 
 @Composable
-fun NavigationSection() {
+fun NavigationSection(
+    modifier: Modifier = Modifier
+) {
 
     TextButton(
         onClick = { Navigator.goBack() },
-        modifier = Modifier
-            .padding(
-                start = 8.dp,
-                top = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
-            )
+        modifier = modifier
             .height(40.dp)
             .absoluteOffset(x = 0.dp, y = 10.dp)
             .zIndex(1f)

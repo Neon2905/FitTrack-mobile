@@ -33,28 +33,26 @@ fun RegisterLiveActivityScreen(viewModel: RegisterLiveActivityViewModel = hiltVi
     LaunchedEffect(Unit) {
         viewModel.fetchInitialLocation()
     }
+    Box {
 
-    NavigationSection()
+        NavigationSection()
 
-    Column(
-        Modifier
-            .padding(WindowInsets.systemBars.asPaddingValues()),
-        verticalArrangement = Arrangement.SpaceBetween,
-    ) {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
 
-        // TODO: Fix map error
-        MapSection(
-            tracks = state.tracks, currentLocation = state.currentLocation,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        )
+            // TODO: Fix map error
+            MapSection(
+                tracks = state.tracks, currentLocation = state.currentLocation,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .offset(y = 10.dp)
+            )
 
-        BottomSheetSection(
-            viewModel
-        )
-
-        // Space for navigation bar
-        Spacer(modifier = Modifier.height(50.dp))
+            BottomSheetSection(
+                viewModel
+            )
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.fittrackapp.fittrack_mobile.presentation.dashboard
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,8 +44,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(WindowInsets.systemBars.asPaddingValues())
-            .padding(horizontal = 24.dp, vertical = 20.dp),
+            .padding(horizontal = 24.dp),
     ) {
         item {
             Column(
@@ -205,10 +205,8 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
                         }
                     }
                 }
-
-                // Spacer to push content above the bottom navigation
-                Spacer(Modifier.padding(bottom = 50.dp))
             }
+            Spacer(Modifier.height(10.dp))
         }
     }
 }

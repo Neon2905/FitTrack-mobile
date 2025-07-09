@@ -1,22 +1,27 @@
 package com.fittrackapp.fittrack_mobile
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
 import com.fittrackapp.fittrack_mobile.navigation.AppNavHost
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
 import com.fittrackapp.fittrack_mobile.presentation.NavBar
 import com.fittrackapp.fittrack_mobile.ui.theme.FitTrackMobileTheme
+import com.fittrackapp.fittrack_mobile.ui.theme.blue
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -42,7 +47,6 @@ class MainActivity() : ComponentActivity() {
 
         val activityRecognitionManager = ActivityRecognitionManager(this)
         activityRecognitionManager.startActivityUpdates()
-
         enableEdgeToEdge()
         setContent {
             FitTrackMobileTheme {
@@ -52,9 +56,27 @@ class MainActivity() : ComponentActivity() {
                     bottomBar = {
                         NavBar()
                     }
-                ) {
-                    AppNavHost()
+                ) { innerPadding ->
+                    AppNavHost(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = innerPadding.calculateBottomPadding())
+                    )
                 }
+
+//                Scaffold(
+//                    bottomBar = {
+//                        NavBar()
+//                    },
+//                    contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(
+//                        0,
+//                        0,
+//                        0,
+//                        0
+//                    )
+//                ) {
+//                    AppNavHost()
+//                }
             }
         }
     }

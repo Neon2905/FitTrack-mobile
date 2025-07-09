@@ -7,8 +7,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -31,7 +37,7 @@ import javax.inject.Inject
 
 
 @Composable
-fun AppNavHost() {
+fun AppNavHost(modifier: Modifier = Modifier) {
     val securePrefsManager = SecurePrefsManager(LocalContext.current.applicationContext)
 
     // Initialize the app vm
@@ -46,12 +52,18 @@ fun AppNavHost() {
     }
 
     NavHost(
+        modifier = modifier
+            .padding(
+                WindowInsets.systemBars.only(
+                    WindowInsetsSides.Horizontal + WindowInsetsSides.Top
+                ).asPaddingValues()
+            ),
         navController = navController,
         startDestination =
             if (securePrefsManager.getAuthUser() == null)
                 NavRoute.Auth.route
             else
-                NavRoute.Register.LiveActivity.route,
+                NavRoute.Dashboard.route,
         enterTransition = { slideInHorizontally { it } + fadeIn() },
         exitTransition = { slideOutHorizontally { -it } + fadeOut() },
         popEnterTransition = { slideInHorizontally { -it } + fadeIn() },

@@ -10,6 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fittrackapp.fittrack_mobile.ui.theme.blue
+import com.fittrackapp.fittrack_mobile.ui.theme.green
 
 @Composable
 fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
@@ -33,6 +35,7 @@ fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
             contentAlignment = Alignment.BottomCenter,
             modifier = Modifier
                 .fillMaxSize()
+                .background(green)
         ) {
             AuthSurface(
                 modifier = Modifier
