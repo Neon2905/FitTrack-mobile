@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fittrackapp.fittrack_mobile.navigation.NavRoute
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
+import com.fittrackapp.fittrack_mobile.presentation.ActivityEntityItem
 import com.fittrackapp.fittrack_mobile.presentation.TrendItem
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
@@ -31,6 +32,7 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 
 import java.time.ZoneId
+import kotlin.collections.orEmpty
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
@@ -40,6 +42,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
     val currentDate =
         state.currentActivity?.startTime?.toInstant()?.atZone(ZoneId.systemDefault())
             ?.toLocalDate();
+
 
     LazyColumn(
         modifier = Modifier
@@ -91,7 +94,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
                                 )
                             )
                             Text(
-                                "325",
+                                state.totalSteps.toString(),
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.primary
@@ -116,7 +119,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
                                 )
                             )
                             Text(
-                                "0.10 KM",
+                                "${"%.2f".format(state.totalDistance)} km",
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold,
                                     color = Color.Blue

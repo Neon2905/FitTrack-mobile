@@ -2,6 +2,7 @@ package com.fittrackapp.fittrack_mobile.presentation.register
 
 import android.location.Location
 import com.fittrackapp.fittrack_mobile.utils.CalorieUtils
+import java.util.Date
 import kotlin.time.Duration
 
 data class RegisterLiveActivityViewState(
@@ -17,4 +18,5 @@ data class RegisterLiveActivityViewState(
     val errorMessage: String? = null,
     val calories: Double = CalorieUtils.calculateCalories(steps, distance, duration),
     val isTargetReached: Boolean = false,
+    val startTime: Date? = null,
 )

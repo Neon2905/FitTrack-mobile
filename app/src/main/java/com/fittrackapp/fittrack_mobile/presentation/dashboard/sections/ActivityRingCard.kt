@@ -59,28 +59,19 @@ fun ActivityRingCard(viewModel: DashboardViewModel = hiltViewModel()) {
             )
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(40.dp),
+                horizontalArrangement = Arrangement.spacedBy(30.dp),
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .size(150.dp),
                     progress = {
-                        (state.currentActivity?.calories ?: 0f) / 500f
+                        (state.totalCaloriesBurned.toFloat()) / 500f
                     },
                     color = RedPink,
                     trackColor = DarkRedPink,
                     strokeWidth = 30.dp,
                     gapSize = 10.dp,
                 )
-
-//                ArcProgressIndicator(
-//                    modifier = Modifier.padding(start = 10.dp),
-//                    goal = 800,
-//                    value = state.currentActivity?.calories?.toInt() ?: 0,
-//                    strokeWidth = 18.dp,
-//                    showLabel = false
-//                )
-
 
                 Text(
                     modifier = Modifier
@@ -100,7 +91,7 @@ fun ActivityRingCard(viewModel: DashboardViewModel = hiltViewModel()) {
                                     fontWeight = FontWeight.Bold
                                 )
                         ) {
-                            append("${state.currentActivity?.calories}/500 CAL")
+                            append("${state.totalCaloriesBurned.toInt()}/500 CAL")
                         }
                     },
                 )

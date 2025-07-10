@@ -13,19 +13,24 @@ import android.location.Location
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.os.CountDownTimer
-import android.util.Log
+import androidx.lifecycle.viewModelScope
+import com.fittrackapp.fittrack_mobile.data.local.dao.ActivityDao
+import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityEntity
+import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityType
 import com.fittrackapp.fittrack_mobile.utils.CalorieUtils.calculateCalories
+import com.fittrackapp.fittrack_mobile.utils.Toast
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.util.Date
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -33,7 +38,8 @@ import kotlin.time.toDuration
 
 @HiltViewModel
 class RegisterLiveActivityViewModel @Inject constructor(
-    private val app: Application
+    private val app: Application,
+    private val activityDao: ActivityDao
 ) : ViewModel(), SensorEventListener {
     private val _state = MutableStateFlow(RegisterLiveActivityViewState())
     val state = _state.asStateFlow()
@@ -66,23 +72,31 @@ class RegisterLiveActivityViewModel @Inject constructor(
         stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
     }
 
-    fun fetchInitialLocation() {
+    suspend fun fetchInitialLocation(): Location? {
         val hasFineLocation = ContextCompat.checkSelfPermission(
             app,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
         val hasCoarseLocation = ContextCompat.checkSelfPermission(
             app,
-            Manifest.permission.ACCESS_COARSE_LOCATION
+            ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
 
         if (hasFineLocation || hasCoarseLocation) {
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
-                    _state.value = _state.value.copy(currentLocation = location)
-                }
+            return suspendCancellableCoroutine { cont ->
+                fusedLocationClient.lastLocation
+                    .addOnSuccessListener { location ->
+                        if (location != null) {
+                            _state.value = _state.value.copy(currentLocation = location)
+                        }
+                        cont.resume(location)
+                    }
+                    .addOnFailureListener { e ->
+                        cont.resumeWithException(e)
+                    }
             }
         }
+        return null
     }
 
     fun onTargetTypeChange(newType: String) {
@@ -99,6 +113,7 @@ class RegisterLiveActivityViewModel @Inject constructor(
             _state.value = _state.value.copy(
                 isLive = true,
                 onPause = false,
+                startTime = Date()
             )
         } else if (_state.value.onPause) {
             // Resume: add a new empty track
@@ -134,7 +149,35 @@ class RegisterLiveActivityViewModel @Inject constructor(
         isTimerRunning = false
     }
 
-    private fun getDelta(): Double {
+    fun onComplete() {
+        viewModelScope.launch {
+            save()
+            Toast.show("Activity saved successfully!")
+        }
+        stopSensors()
+        stopLocationUpdates()
+        countDownTimer?.cancel()
+        isTimerRunning = false
+        _state.value = _state.value.copy(isLive = false, onPause = false)
+    }
+
+    suspend fun save() {
+        val activityEntity =
+            ActivityEntity(
+                id = 0, // Auto-generated ID
+                type = ActivityType.WALKING, // TODO: Set appropriate type based on user behavior
+                startTime = _state.value.startTime ?: Date(),
+                endTime = Date(),
+                duration = _state.value.duration.inWholeMilliseconds,
+                distance = _state.value.distance,
+                caloriesBurned = _state.value.calories,
+                steps = _state.value.steps
+            )
+
+        activityDao.add(activityEntity)
+    }
+
+    private fun getTargetDelta(): Double {
         return when (_state.value.targetType) {
             "distance" -> 250.0 // meters
             "steps" -> 250.0
@@ -145,12 +188,12 @@ class RegisterLiveActivityViewModel @Inject constructor(
     }
 
     fun increaseTargetValue() {
-        val delta: Double = getDelta()
+        val delta: Double = getTargetDelta()
         _state.value = _state.value.copy(targetValue = _state.value.targetValue + delta)
     }
 
     fun decreaseTargetValue() {
-        val delta: Double = getDelta()
+        val delta: Double = getTargetDelta()
         _state.value =
             _state.value.copy(
                 targetValue =
@@ -173,7 +216,7 @@ class RegisterLiveActivityViewModel @Inject constructor(
 
 
     /** IMPORTANT: If the app crashes when restarting timer, it's not my app that failed. Disable 'Live Edit' option in Android Studio.
-     It's still in beta and causes issues with long-running tasks like timers.**/
+    It's still in beta and causes issues with long-running tasks like timers.**/
     @RequiresPermission(anyOf = [ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION])
     private fun startLocationUpdates() {
         // Always stop previous updates before starting new ones
@@ -242,47 +285,49 @@ class RegisterLiveActivityViewModel @Inject constructor(
         if (isTimerRunning) return
         isTimerRunning = true
 
-        countDownTimer = object : CountDownTimer(Long.MAX_VALUE, 500L) {
-            var lastSteps = 0
-            var lastDistance = 0.0
-            var lastDuration = 0L
+        countDownTimer =
+            object : CountDownTimer(Long.MAX_VALUE, 500L) {
+                var lastSteps = 0
+                var lastDistance = 0.0
+                var lastDuration = 0L
 
-            override fun onTick(millisUntilFinished: Long) {
-                if (!_state.value.isLive || _state.value.onPause) {
-                    cancel()
-                    isTimerRunning = false
-                    return
+                override fun onTick(millisUntilFinished: Long) {
+                    if (!_state.value.isLive || _state.value.onPause) {
+                        cancel()
+                        isTimerRunning = false
+                        return
+                    }
+
+                    val deltaDistance = _state.value.distance - lastDistance
+                    val deltaSteps = _state.value.steps - lastSteps
+
+                    val deltaCalorie = calculateCalories(
+                        deltaSteps,
+                        deltaDistance / 1000,
+                        0.5.toDuration(DurationUnit.SECONDS)
+                    )
+                    _state.value = _state.value.copy(
+                        duration = _state.value.duration + 500L.milliseconds,
+                        calories = (_state.value.calories + deltaCalorie)
+                    )
+                    if (getCurrentValue() >= _state.value.targetValue) {
+                        onComplete()
+                        stop()
+                        _state.value = _state.value.copy(isTargetReached = true)
+                        cancel()
+                        isTimerRunning = false
+                        return
+                    }
+
+                    lastSteps = _state.value.steps
+                    lastDistance = _state.value.distance
+                    lastDuration = _state.value.duration.inWholeSeconds
                 }
 
-                val deltaDistance = _state.value.distance - lastDistance
-                val deltaSteps = _state.value.steps - lastSteps
-
-                val deltaCalorie = calculateCalories(
-                    deltaSteps,
-                    deltaDistance / 1000,
-                    0.5.toDuration(DurationUnit.SECONDS)
-                )
-                _state.value = _state.value.copy(
-                    duration = _state.value.duration + 500L.milliseconds,
-                    calories = (_state.value.calories + deltaCalorie)
-                )
-                if (getCurrentValue() >= _state.value.targetValue) {
-                    stop()
-                    _state.value = _state.value.copy(isTargetReached = true)
-                    cancel()
+                override fun onFinish() {
                     isTimerRunning = false
-                    return
                 }
-
-                lastSteps = _state.value.steps
-                lastDistance = _state.value.distance
-                lastDuration = _state.value.duration.inWholeSeconds
-            }
-
-            override fun onFinish() {
-                isTimerRunning = false
-            }
-        }.start()
+            }.start()
     }
 
     private var baseSteps: Int? = null

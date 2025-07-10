@@ -42,6 +42,9 @@ import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivit
 import com.fittrackapp.fittrack_mobile.presentation.register.activity_live.LiveSection
 import com.fittrackapp.fittrack_mobile.presentation.register.activity_live.ActionSection
 import com.fittrackapp.fittrack_mobile.presentation.register.activity_live.TargetSection
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun ExperimentScreen(viewmodel: ExperimentViewModel = hiltViewModel()) {
@@ -91,7 +94,24 @@ fun ActivityEntityItem(activity: ActivityEntity) {
             Text(text = activity.id.toString(), style = MaterialTheme.typography.titleMedium)
             Text(text = "Type: ${activity.type}", style = MaterialTheme.typography.bodyMedium)
             Text(
-                text = "Duration: ${activity.duration} min",
+                text = "Distance: ${activity.distance} km",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Calories: ${activity.caloriesBurned} kcal",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Steps: ${activity.steps}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Start Time: ${activity.startTime}",
+                style = MaterialTheme.typography.bodySmall
+            )
+            Text(
+                // TODO: Format the duration properly
+                text = "Duration: ${activity.duration.seconds.inWholeMinutes} min",
                 style = MaterialTheme.typography.bodySmall
             )
         }

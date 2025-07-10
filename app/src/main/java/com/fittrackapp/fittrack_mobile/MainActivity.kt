@@ -1,9 +1,14 @@
 package com.fittrackapp.fittrack_mobile
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -40,8 +45,25 @@ class MainActivity() : ComponentActivity() {
 
         // Permission check (already present)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (checkSelfPermission(android.Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(android.Manifest.permission.ACTIVITY_RECOGNITION), 1001)
+            if (checkSelfPermission(ACTIVITY_RECOGNITION) != PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(ACTIVITY_RECOGNITION), 1001)
+            }
+            if (
+                checkSelfPermission(
+                    ACCESS_FINE_LOCATION
+                ) != PERMISSION_GRANTED ||
+                checkSelfPermission(
+                    ACCESS_COARSE_LOCATION
+                ) != PERMISSION_GRANTED
+            ) {
+                Log.i("MainActivity", "Requesting location permissions")
+                requestPermissions(
+                    arrayOf(
+                        ACCESS_FINE_LOCATION,
+                        ACCESS_COARSE_LOCATION
+                    ),
+                    1002
+                )
             }
         }
 
