@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.fittrackapp.fittrack_mobile.navigation.NavRoute
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
 
@@ -46,7 +47,8 @@ fun NavBar(
 
     NavigationBar(
         modifier = modifier
-            .height(IntrinsicSize.Min),
+            .height(IntrinsicSize.Min)
+            .zIndex(1f)
     ) {
         navItems.forEach { item ->
             NavigationBarItem(

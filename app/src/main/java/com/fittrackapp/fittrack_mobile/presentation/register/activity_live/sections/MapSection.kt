@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
 import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityViewModel
+import com.fittrackapp.fittrack_mobile.ui.theme.blue
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -100,12 +101,12 @@ fun MapSection(
                     .padding(start = 15.dp, top = 60.dp)
                     .size(45.dp),
                 shape = MaterialTheme.shapes.small,
-                containerColor = MaterialTheme.colorScheme.onBackground,
+                containerColor = MaterialTheme.colorScheme.onPrimary,
             ) {
                 Icon(
                     contentDescription = "Change Layer",
                     imageVector = Icons.Default.Layers,
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         }

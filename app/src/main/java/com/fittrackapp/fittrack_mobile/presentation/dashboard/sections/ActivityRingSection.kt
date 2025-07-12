@@ -1,20 +1,21 @@
 package com.fittrackapp.fittrack_mobile.presentation.dashboard
 
+import android.widget.Space
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.elevatedCardElevation
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,17 +27,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fittrackapp.fittrack_mobile.presentation.ArcProgressIndicator
 import com.fittrackapp.fittrack_mobile.ui.theme.DarkRedPink
 import com.fittrackapp.fittrack_mobile.ui.theme.RedPink
 
 @Composable
-fun ActivityRingCard(viewModel: DashboardViewModel = hiltViewModel()) {
+fun ActivityRingSection(viewModel: DashboardViewModel = hiltViewModel()) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     Card(
-        shape = RoundedCornerShape(16.dp),
+        shape = MaterialTheme.shapes.large,
         elevation = elevatedCardElevation(4.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -49,23 +49,28 @@ fun ActivityRingCard(viewModel: DashboardViewModel = hiltViewModel()) {
             verticalArrangement = Arrangement.spacedBy(22.dp),
         ) {
 
-            Text(
+            Column(
                 modifier = Modifier
-                    .padding(start = 5.dp),
-                text = "Activity Ring",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                )
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(30.dp),
+                    .height(IntrinsicSize.Min)
             ) {
+                Text(
+                    modifier = Modifier
+                        .padding(start = 5.dp),
+                    text = "Activity Ring",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                    )
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                HorizontalDivider(modifier = Modifier.weight(1f))
+            }
+
+            Row {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .size(150.dp),
                     progress = {
-                        (state.totalCaloriesBurned.toFloat()) / 500f
+                        (state.totalCalories.toFloat()) / 500f
                     },
                     color = RedPink,
                     trackColor = DarkRedPink,
@@ -73,9 +78,11 @@ fun ActivityRingCard(viewModel: DashboardViewModel = hiltViewModel()) {
                     gapSize = 10.dp,
                 )
 
+                Spacer(modifier = Modifier.weight(1f))
+
                 Text(
                     modifier = Modifier
-                        .padding(bottom = 40.dp)
+                        .padding(bottom = 20.dp, end = 40.dp)
                         .align(Alignment.CenterVertically),
                     text = buildAnnotatedString {
                         withStyle(
@@ -91,7 +98,7 @@ fun ActivityRingCard(viewModel: DashboardViewModel = hiltViewModel()) {
                                     fontWeight = FontWeight.Bold
                                 )
                         ) {
-                            append("${state.totalCaloriesBurned.toInt()}/500 CAL")
+                            append("${state.totalCalories}/500 CAL")
                         }
                     },
                 )

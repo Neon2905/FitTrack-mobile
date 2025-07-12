@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,7 +36,7 @@ import com.fittrackapp.fittrack_mobile.presentation.ArcProgressIndicator
 import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityViewModel
 import com.fittrackapp.fittrack_mobile.ui.theme.blue
 import com.fittrackapp.fittrack_mobile.ui.theme.darkBlue
-import com.fittrackapp.fittrack_mobile.utils.DurationUtils
+import com.fittrackapp.fittrack_mobile.utils.formatString
 
 @Composable
 fun LiveSection(
@@ -58,10 +59,10 @@ fun LiveSection(
         ) {
             ArcProgressIndicator(
                 goal = state.targetValue.toInt(),
-                value = viewModel.getCurrentValue().toInt(),
+                value = viewModel.getCurrentValue(),
                 strokeWidth = 15.dp,
                 size = 150.dp,
-                ringColor = blue,
+                ringColor = Color(0xFF179A1A),
                 trackColor = darkBlue,
                 showLabel = false,
                 modifier = Modifier.align(Alignment.Center)
@@ -82,6 +83,20 @@ fun LiveSection(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Icon(
+                    imageVector =
+                        when (state.targetType) {
+                            "distance" -> Icons.Default.Place
+                            "duration" -> Icons.Default.AccessTime
+                            "calorie" -> Icons.Default.Whatshot
+                            "steps" -> Icons.AutoMirrored.Filled.DirectionsWalk
+                            else -> Icons.Default.Place // Fallback icon
+                        },
+                    contentDescription = "Activity Icon",
+                    modifier = Modifier.size(35.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = "${(viewModel.getCurrentValue() / state.targetValue * 100).toInt()}%",
                     style = MaterialTheme.typography.headlineLarge,
@@ -95,19 +110,6 @@ fun LiveSection(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(10.dp))
-                Icon(
-                    imageVector =
-                        when (state.targetType) {
-                            "distance" -> Icons.Default.Place
-                            "duration" -> Icons.Default.AccessTime
-                            "calorie" -> Icons.Default.Whatshot
-                            "steps" -> Icons.AutoMirrored.Filled.DirectionsWalk
-                            else -> Icons.Default.Place // Fallback icon
-                        },
-                    contentDescription = "Activity Icon",
-                    modifier = Modifier.size(30.dp),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
                 Spacer(Modifier.height(15.dp))
             }
         }
@@ -130,7 +132,7 @@ fun LiveSection(
                 MetricItem(
                     icon = Icons.Default.AccessTime,
                     label = "Duration",
-                    value = DurationUtils.formatDuration(state.duration)
+                    value = state.duration.formatString()
                 )
                 MetricItem(icon = Icons.Default.MonitorHeart, label = "bpm", value = "-")
             }

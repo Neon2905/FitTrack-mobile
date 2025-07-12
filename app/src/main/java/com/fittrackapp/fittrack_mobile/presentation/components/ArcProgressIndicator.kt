@@ -23,7 +23,7 @@ import com.fittrackapp.fittrack_mobile.ui.theme.RedPink
 @Composable
 fun ArcProgressIndicator(
     goal: Int,
-    value: Int,
+    value: Double,
     modifier: Modifier = Modifier,
     ringColor: Color = RedPink, // Apple red/pink
     trackColor: Color = DarkRedPink, // Dark ring background

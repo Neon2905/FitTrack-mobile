@@ -121,6 +121,12 @@ fun AppNavHost(modifier: Modifier = Modifier) {
 
         composable(
             route = NavRoute.Register.LiveActivity.route,
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Up,
+                    tween(700)
+                )
+            }
         ) {
             RegisterLiveActivityScreen(registerLiveActivityViewModel)
         }

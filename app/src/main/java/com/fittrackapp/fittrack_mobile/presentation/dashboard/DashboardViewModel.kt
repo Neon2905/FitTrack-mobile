@@ -10,7 +10,9 @@ import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityEntity
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
 import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
 import com.fittrackapp.fittrack_mobile.presentation.auth.AuthViewState
-import com.fittrackapp.fittrack_mobile.utils.DateUtils.getStartAndEndOfDay
+import com.fittrackapp.fittrack_mobile.utils.getEndOfDay
+import com.fittrackapp.fittrack_mobile.utils.getStartAndEndOfDay
+import com.fittrackapp.fittrack_mobile.utils.getStartOfDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,28 +35,25 @@ class DashboardViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
+        // Fetch today's activities
         viewModelScope.launch {
-            val (start, end) = getStartAndEndOfDay(Date())
+            val (start, end) = Date().getStartAndEndOfDay()
             activityDao.getAllByTime(start, end).collect { activities ->
                 _state.update { it.copy(activities = activities) }
             }
-            Log.i(
-                "DashboardViewModel",
-                "Initialized with activities: ${activityDao.getAllByTime(start, end)}"
-            )
         }
-    }
 
-    fun fetchTotalSteps() {
-        Log.i("DashboardViewModel", "Total steps: ${_state.value.totalSteps}")
+        // Fetch last week's activities
+        viewModelScope.launch {
+            val start = Date().apply { time -= 7 * 24 * 60 * 60 * 1000 }.getStartOfDay()
+            val end = Date().getEndOfDay()
+            activityDao.getAllByTime(start, end).collect { lastWeekActivities ->
+                _state.update { it.copy(lastWeekActivities = lastWeekActivities) }
+            }
+        }
     }
 
     fun getUsername(): String? {
         return securePrefsManager.getAuthUser()?.username ?: "Guest"
     }
-
-//    fun onActivitySelected(activity: ActivityEntity) {
-//        _state.value = _state.value.copy(currentActivity = activity)
-//        Log.i("DashboardViewModel", "Selected activity: ${_state.value.currentActivity}")
-//    }
 }

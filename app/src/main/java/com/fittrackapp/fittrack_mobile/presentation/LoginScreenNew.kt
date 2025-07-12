@@ -75,37 +75,3 @@ fun ImportedScreen(viewModel: DashboardViewModel = hiltViewModel()) {
         }
     }
 }
-
-@Composable
-fun TrendItem(
-    icon: ImageVector,
-    label: String,
-    value: String,
-    valueColor: Color
-) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier.size(35.dp)
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Column {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            Text(
-                text = value,
-                color = valueColor,
-                style = MaterialTheme.typography.labelLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Start
-                )
-            )
-        }
-    }
-}

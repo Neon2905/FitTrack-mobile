@@ -17,7 +17,7 @@ val gray = Color(0xFF3F3F3F)
 val blueGray = Color(0xFF404352)
 val nightDark = Color(0xFF403757)
 
-val purple = Color(0xFF9b11ba)
+val purple = Color(0xFFA28BFC)
 val orange = Color(0xFFdb660d)
 val redOrange = Color(0xFFe84a23)
 val green = Color(0xFF18c865)

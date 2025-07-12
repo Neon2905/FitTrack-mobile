@@ -9,6 +9,7 @@ import com.fittrackapp.fittrack_mobile.data.local.dao.ActivityDao
 import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityEntity
 import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityType
 import com.fittrackapp.fittrack_mobile.presentation.auth.AuthViewState
+import com.fittrackapp.fittrack_mobile.utils.getStartAndEndOfDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +18,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
-import com.fittrackapp.fittrack_mobile.utils.DateUtils.getStartAndEndOfDay
 import java.util.Calendar
 
 @HiltViewModel
@@ -28,21 +28,9 @@ class ExperimentViewModel @Inject constructor(
     private val _state = MutableStateFlow(State())
     val state = _state.asStateFlow()
 
-    private val startOfDay: Long
-        get() {
-            val now = Calendar.getInstance()
-            now.set(Calendar.HOUR_OF_DAY, 0)
-            now.set(Calendar.MINUTE, 0)
-            now.set(Calendar.SECOND, 0)
-            now.set(Calendar.MILLISECOND, 0)
-            return now.timeInMillis
-        }
-    private val endOfDay: Long
-        get() = startOfDay + 24 * 60 * 60 * 1000
-
     init {
         viewModelScope.launch {
-            val (start, end) = getStartAndEndOfDay(Date())
+            val (start, end) = Date().getStartAndEndOfDay()
             activityDao.getAllByTime(start, end).collect { activities ->
                 _state.update { it.copy(activities = activities) }
             }

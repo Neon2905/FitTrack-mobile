@@ -1,6 +1,6 @@
 package com.fittrackapp.fittrack_mobile.presentation
 
-import androidx.compose.animation.animateContentSize
+import android.graphics.Typeface
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -42,9 +42,41 @@ import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivit
 import com.fittrackapp.fittrack_mobile.presentation.register.activity_live.LiveSection
 import com.fittrackapp.fittrack_mobile.presentation.register.activity_live.ActionSection
 import com.fittrackapp.fittrack_mobile.presentation.register.activity_live.TargetSection
+import com.patrykandpatrick.vico.core.entry.entryModelOf
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.unit.dp
+
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.fittrackapp.fittrack_mobile.ui.theme.BluePrimary
+import com.fittrackapp.fittrack_mobile.ui.theme.RedPink
+import com.fittrackapp.fittrack_mobile.ui.theme.blue
+import com.fittrackapp.fittrack_mobile.ui.theme.redOrange
+import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
+import com.patrykandpatrick.vico.compose.chart.column.columnChart
+import com.patrykandpatrick.vico.core.chart.column.ColumnChart
+import com.patrykandpatrick.vico.core.component.shape.LineComponent
+import com.patrykandpatrick.vico.core.component.text.TextComponent
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.patrykandpatrick.vico.core.entry.FloatEntry
+
 
 @Composable
 fun ExperimentScreen(viewmodel: ExperimentViewModel = hiltViewModel()) {
@@ -117,3 +149,4 @@ fun ActivityEntityItem(activity: ActivityEntity) {
         }
     }
 }
+
