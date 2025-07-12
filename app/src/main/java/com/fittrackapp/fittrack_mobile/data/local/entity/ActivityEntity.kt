@@ -1,9 +1,9 @@
 package com.fittrackapp.fittrack_mobile.data.local.entity
 
+import android.location.Location
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
-import kotlin.time.Duration
 
 @Entity(tableName = "activity")
 data class ActivityEntity(
@@ -18,6 +18,7 @@ data class ActivityEntity(
     val steps: Int = 0,
     val reps: Int = 0,
     val challengeId: Int? = null,
+    val tracks: List<Location> = emptyList(), // List of tracks
     val isUploaded: Boolean = false,
 )
 

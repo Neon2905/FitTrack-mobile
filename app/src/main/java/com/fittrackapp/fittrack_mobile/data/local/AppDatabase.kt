@@ -14,7 +14,7 @@ import com.fittrackapp.fittrack_mobile.data.local.entity.ChallengeEntity
             ActivityEntity::class,
             ChallengeEntity::class
         ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

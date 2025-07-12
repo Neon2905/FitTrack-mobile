@@ -6,15 +6,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityEntity
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
 @Dao
 interface ActivityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(activity: ActivityEntity)
-
-    @Query("SELECT * FROM activity WHERE id = :id")
-    fun getUserById(id: Int): Flow<ActivityEntity?>
 
     @Query("SELECT * FROM activity")
     fun getAll(): Flow<List<ActivityEntity>>
