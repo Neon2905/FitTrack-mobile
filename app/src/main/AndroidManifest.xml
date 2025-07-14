@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".FitTrackMobile"
@@ -20,6 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FitTrackMobile"
         tools:targetApi="33">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -34,8 +37,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCI17CwKcD5785_tdou1u32g9SWJsWSGc0" />
         <receiver
-            android:name=".ActivityUpdatesReceiver"
-            android:exported="false" />
+            android:name=".auto_task.AutoTaskReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

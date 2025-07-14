@@ -1,18 +1,19 @@
 package com.fittrackapp.fittrack_mobile.data.repository
 
 import android.util.Log
-import androidx.credentials.exceptions.domerrors.NetworkError
 import arrow.core.Either
 import com.fittrackapp.fittrack_mobile.data.mapper.toGeneralError
+import com.fittrackapp.fittrack_mobile.data.model.ActivitySyncRequest
 import javax.inject.Inject
 import com.fittrackapp.fittrack_mobile.data.remote.ActivityApi
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
 import com.fittrackapp.fittrack_mobile.domain.repository.ActivityRepository
+import com.fittrackapp.fittrack_mobile.domain.model.NetworkError
 
 class ActivityRepositoryImpl @Inject constructor(
     private val activityApi: ActivityApi
 ) : ActivityRepository {
-    override suspend fun getAll(): Either<com.fittrackapp.fittrack_mobile.domain.model.NetworkError, List<Activity>> {
+    override suspend fun getAll(): Either<NetworkError, List<Activity>> {
         return Either.catch {
             activityApi.getAll()
         }.mapLeft {
@@ -22,7 +23,21 @@ class ActivityRepositoryImpl @Inject constructor(
     }
 
     override suspend fun register(activity: Activity): Either<NetworkError, Boolean> {
-        TODO("Not yet implemented")
+        return Either.catch {
+            activityApi.register(activity)
+        }.mapLeft {
+            Log.e("ActivityRepositoryImpl", "Register failed: " + it.message, it)
+            it.toGeneralError()
+        }
+    }
+
+    override suspend fun sync(request: ActivitySyncRequest): Either<NetworkError, List<Activity>> {
+        return Either.catch {
+            activityApi.sync(request)
+        }.mapLeft {
+            Log.e("ActivityRepositoryImpl", "Sync failed: " + it.message, it)
+            it.toGeneralError()
+        }
     }
 
 }

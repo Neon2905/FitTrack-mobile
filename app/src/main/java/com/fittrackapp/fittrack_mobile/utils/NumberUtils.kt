@@ -1,7 +1,12 @@
 package com.fittrackapp.fittrack_mobile.utils
 
 fun Number.toFormattedString(): String {
-    return "%,.1f".format(this.toDouble())
+    val doubleValue = this.toDouble()
+    return if (doubleValue % 1.0 == 0.0) {
+        doubleValue.toInt().toString()
+    } else {
+        "%,.1f".format(doubleValue)
+    }
 }
 
 fun Number.round(decimals: Int = 2): Number {

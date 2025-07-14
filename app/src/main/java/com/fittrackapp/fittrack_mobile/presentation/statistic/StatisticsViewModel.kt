@@ -28,8 +28,9 @@ class StatisticsViewModel @Inject constructor(
                     endTime = date,
                     type = "walking",
                     steps = (100..12000).random(),
-                    distance = (1..20).random().toFloat(),
-                    calories = (400..500).random().toFloat()
+                    distance = (1..20).random().toDouble(),
+                    calories = (400..500).random().toDouble(),
+                    duration = (30..3600).random().toLong(),
                 )
             }
         )

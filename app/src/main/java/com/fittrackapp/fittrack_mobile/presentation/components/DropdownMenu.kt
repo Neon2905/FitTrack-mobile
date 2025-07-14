@@ -2,17 +2,19 @@ package com.fittrackapp.fittrack_mobile.presentation
 
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class MenuItem(
     val title: String,
-    val icon: ImageVector,
+    val icon: ImageVector? = null,
     val value: String
 )
 
@@ -35,18 +37,20 @@ fun DropdownMenu(
     ) {
         menuItems.forEach { item ->
             DropdownMenuItem(
-                text = { androidx.compose.material3.Text(item.title) },
+                text = { Text(item.title) },
                 onClick = { onItemSelected(item) },
                 leadingIcon = {
-                    Icon(
-                        imageVector = item.icon,
-                        contentDescription = null
-                    )
+                    if (item.icon != null) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = null
+                        )
+                    }
                 },
                 trailingIcon = {
                     if (selectedItem == item) {
                         Icon(
-                            imageVector = androidx.compose.material.icons.Icons.Default.Check,
+                            imageVector = Icons.Default.Check,
                             contentDescription = null
                         )
                     }

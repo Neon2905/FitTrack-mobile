@@ -25,7 +25,7 @@ import com.fittrackapp.fittrack_mobile.utils.toFormattedString
 fun DailySummarySection(
     modifier: Modifier = Modifier,
     title: String = "Distance",
-    total: Double = 0.0,
+    total: Number = 0.0,
     dataColor: Color = BluePrimary,
     unit: String = "",
     hourlyData: List<Float> = List(24) { 0f },

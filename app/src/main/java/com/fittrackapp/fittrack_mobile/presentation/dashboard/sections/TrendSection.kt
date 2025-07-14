@@ -83,7 +83,7 @@ fun TrendSection(
                             else
                                 MaterialTheme.colorScheme.error,
                         label = "Progress",
-                        value = "${state.averageCalorieBurned.round()} CAL/DAY",
+                        value = "${state.averageCalorieBurned.toInt()} CAL/DAY",
                         valueColor = Color(0xFF6A4FB3)
                     )
                     TrendItem(

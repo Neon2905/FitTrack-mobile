@@ -176,14 +176,14 @@ fun TargetSection(
                         .clickable { showMenu = true },
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    selectedItem?.icon?.let { icon ->
+                    selectedItem.icon?.let { icon ->
                         Icon(
                             imageVector = icon,
                             contentDescription = "Selected Type",
                             modifier = Modifier.size(24.dp)
                         )
                     }
-                    selectedItem?.title?.let { Text(it) }
+                    selectedItem.title?.let { Text(it) }
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Arrow Down",

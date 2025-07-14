@@ -68,7 +68,6 @@ fun LiveSection(
                 modifier = Modifier.align(Alignment.Center)
             )
 
-
             // Target value with unit
             val targetValueWithUnit: String =
                 when (state.targetType) {
@@ -80,9 +79,23 @@ fun LiveSection(
                 }
 
             Column(
-                modifier = Modifier.align(Alignment.BottomCenter),
+                modifier = Modifier.align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    text = "${(viewModel.getCurrentValue() / state.targetValue * 100).toInt()}%",
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "of $targetValueWithUnit",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(10.dp))
                 Icon(
                     imageVector =
                         when (state.targetType) {
@@ -96,21 +109,6 @@ fun LiveSection(
                     modifier = Modifier.size(35.dp),
                     tint = MaterialTheme.colorScheme.onSurface
                 )
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = "${(viewModel.getCurrentValue() / state.targetValue * 100).toInt()}%",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "of $targetValueWithUnit",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(Modifier.height(10.dp))
-                Spacer(Modifier.height(15.dp))
             }
         }
 

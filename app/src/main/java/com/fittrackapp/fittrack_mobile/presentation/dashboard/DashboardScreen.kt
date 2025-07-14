@@ -17,6 +17,7 @@ import com.fittrackapp.fittrack_mobile.navigation.Navigator
 import com.fittrackapp.fittrack_mobile.ui.theme.BluePrimary
 import com.fittrackapp.fittrack_mobile.ui.theme.blue
 import com.fittrackapp.fittrack_mobile.ui.theme.purple
+import com.fittrackapp.fittrack_mobile.utils.round
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
@@ -59,7 +60,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
                 ) {
                     DailySummarySection(
                         modifier = Modifier.weight(1f),
-                        total = state.totalSteps.toDouble(),
+                        total = state.totalSteps,
                         title = "Step Count",
                         dataColor = purple,
                         hourlyData = state.hourlyStepData

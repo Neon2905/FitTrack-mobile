@@ -11,7 +11,7 @@ data class ActivityEntity(
     val id: Int = 0,
     val type: ActivityType,
     val startTime: Date,
-    val endTime: Date,
+    val endTime: Date? = null,
     val duration: Long, // Use Long for milliseconds
     val distance: Double = 0.0,
     val caloriesBurned: Double,
@@ -23,5 +23,5 @@ data class ActivityEntity(
 )
 
 enum class ActivityType {
-    WALKING, RUNNING, CYCLING, WEIGHTLIFTING
+    WALKING, RUNNING, CYCLING, WEIGHTLIFTING, UNKNOWN
 }

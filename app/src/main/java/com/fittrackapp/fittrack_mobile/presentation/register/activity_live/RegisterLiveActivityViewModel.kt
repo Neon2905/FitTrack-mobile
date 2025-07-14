@@ -41,7 +41,12 @@ class RegisterLiveActivityViewModel @Inject constructor(
     private val app: Application,
     private val activityDao: ActivityDao
 ) : ViewModel(), SensorEventListener {
-    private val _state = MutableStateFlow(RegisterLiveActivityViewState())
+    private val _state = MutableStateFlow(
+        RegisterLiveActivityViewState(
+            targetType = "distance",
+            targetValue = getInitialTargetValue("distance")
+        )
+    )
     val state = _state.asStateFlow()
 
     private fun getInitialTargetValue(targetType: String): Double = when (targetType) {
@@ -50,13 +55,6 @@ class RegisterLiveActivityViewModel @Inject constructor(
         "duration" -> 5.0 // minutes
         "calorie" -> 100.0
         else -> 1.0
-    }
-
-    init {
-        _state.value = _state.value.copy(
-            targetType = "distance",
-            targetValue = getInitialTargetValue("distance")
-        )
     }
 
     private var sensorManager: SensorManager? = null

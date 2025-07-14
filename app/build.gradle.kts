@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.hilt.common)
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.0")
     testImplementation("androidx.test:core-ktx:1.5.0")
@@ -87,6 +88,12 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    // WorkManager with Hilt support
+    implementation("androidx.hilt:hilt-work:1.1.0")
+
+    // Core WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
     //charts
     implementation("com.patrykandpatrick.vico:core:1.13.0")
     implementation("com.patrykandpatrick.vico:compose:1.13.0")
@@ -105,4 +112,6 @@ dependencies {
     kapt("androidx.room:room-compiler:2.7.2")
     implementation("androidx.room:room-ktx:2.7.2")
     implementation(kotlin("test"))
+
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
 }

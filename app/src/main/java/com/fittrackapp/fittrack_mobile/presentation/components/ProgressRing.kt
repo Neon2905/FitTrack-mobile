@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.presentation.components
+package com.fittrackapp.fittrack_mobile.presentation
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas

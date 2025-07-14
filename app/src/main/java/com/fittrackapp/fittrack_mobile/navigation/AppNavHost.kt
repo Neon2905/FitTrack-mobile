@@ -32,6 +32,7 @@ import com.fittrackapp.fittrack_mobile.presentation.StatisticsScreen
 import com.fittrackapp.fittrack_mobile.presentation.dashboard.DashboardViewModel
 import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityScreen
 import com.fittrackapp.fittrack_mobile.presentation.setting.SettingScreen
+import com.fittrackapp.fittrack_mobile.ui.ActivityDetailsScreen
 import dagger.hilt.android.EntryPointAccessors
 import javax.inject.Inject
 
@@ -117,6 +118,12 @@ fun AppNavHost(modifier: Modifier = Modifier) {
             route = NavRoute.ImportedScreen.route
         ) {
             ExperimentScreen()
+//            ActivityDetailsScreen(
+//                activityType = "Running",
+//                duration = 30,
+//                calories = 300,
+//                date = "2023-10-01"
+//            )
         }
 
         composable(
