@@ -1,14 +1,27 @@
 package com.fittrackapp.fittrack_mobile
 
+import android.Manifest
 import android.app.Application
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
+import androidx.core.content.ContextCompat
+import com.fittrackapp.fittrack_mobile.auto_task.utils.scheduleDailySummaryWorker
 import com.fittrackapp.fittrack_mobile.data.local.dao.ActivityDao
 import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityEntity
 import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityType
+import com.fittrackapp.fittrack_mobile.data.local.prefs.SharedPrefsManager
 import com.fittrackapp.fittrack_mobile.domain.repository.ActivityRepository
+import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
-import kotlin.collections.forEach
+import com.fittrackapp.fittrack_mobile.data.local.prefs.PrefKeys
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import kotlin.jvm.java
 
 @HiltAndroidApp
 class FitTrackMobile : Application() {
@@ -24,9 +37,32 @@ class FitTrackMobile : Application() {
             private set
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
+    @RequiresPermission(Manifest.permission.SCHEDULE_EXACT_ALARM)
     override fun onCreate() {
         super.onCreate()
+        val prefsManager =
+            EntryPointAccessors.fromApplication(this, SharedPrefsEntryPoint::class.java)
+                .sharedPrefsManager()
+        PrefKeys.init(prefsManager)
+
         instance = this
+        try {
+            val alarmManager = getSystemService(ALARM_SERVICE) as android.app.AlarmManager
+            if (alarmManager.canScheduleExactAlarms()) {
+                scheduleDailySummaryWorker(this)
+            }
+        } catch (e: SecurityException) {
+            // Handle the case where exact alarms cannot be scheduled (e.g., log or notify user)
+        }
+
+        val activityManager = ActivityRecognitionManager(applicationContext)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED
+        ) {
+            activityManager.startUpdates()
+        }
+
 
         // TODO: Remove this in production
 //        val activities: List<ActivityEntity> = (0..364).flatMap { day ->
@@ -60,4 +96,11 @@ class FitTrackMobile : Application() {
 //            }
 //        }
     }
+}
+
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface SharedPrefsEntryPoint {
+    fun sharedPrefsManager(): SharedPrefsManager
 }

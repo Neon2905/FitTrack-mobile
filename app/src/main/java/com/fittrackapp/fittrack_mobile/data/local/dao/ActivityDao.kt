@@ -30,9 +30,6 @@ interface ActivityDao {
     @Query("SELECT id, steps, distance, caloriesBurned, startTime FROM activity WHERE startTime >= :start AND startTime < :end")
     fun getSummaryByTime(start: Long, end: Long): Flow<List<ActivitySummaryEntity>>
 
-    @Query("SELECT * FROM activity WHERE challengeId = :challengeId")
-    fun getByChallengeId(challengeId: Int): Flow<List<ActivityEntity>>
-
     @Query("SELECT * FROM activity WHERE isUploaded = 0")
     fun getAllUnSynced(): Flow<List<ActivityEntity>>
 }

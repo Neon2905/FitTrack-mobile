@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.auto_task
+package com.fittrackapp.fittrack_mobile.auto_task.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context

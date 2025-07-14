@@ -2,6 +2,12 @@ package com.fittrackapp.fittrack_mobile.utils
 
 import java.util.Date
 
+
+fun Date.format(format: String = "yyyy-MM-dd HH:mm:ss"): String {
+    val formatter = java.text.SimpleDateFormat(format, java.util.Locale.getDefault())
+    return formatter.format(this)
+}
+
 fun Date.getStartAndEndOfDay(): Pair<Long, Long> {
     return this.getStartOfDay() to this.getEndOfDay()
 }

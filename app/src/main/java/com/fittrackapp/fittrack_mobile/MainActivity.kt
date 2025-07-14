@@ -25,6 +25,7 @@ import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
 import com.fittrackapp.fittrack_mobile.navigation.AppNavHost
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
 import com.fittrackapp.fittrack_mobile.presentation.NavBar
+import com.fittrackapp.fittrack_mobile.sheet.BottomSheetHost
 import com.fittrackapp.fittrack_mobile.ui.theme.FitTrackMobileTheme
 import com.fittrackapp.fittrack_mobile.ui.theme.blue
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +33,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity() : ComponentActivity() {
+
     @Inject
     lateinit var securePrefsManager: SecurePrefsManager
 
@@ -66,9 +68,6 @@ class MainActivity() : ComponentActivity() {
                 )
             }
         }
-
-        val activityRecognitionManager = ActivityRecognitionManager(this)
-        activityRecognitionManager.startActivityUpdates()
         enableEdgeToEdge()
         setContent {
             FitTrackMobileTheme {
@@ -79,11 +78,13 @@ class MainActivity() : ComponentActivity() {
                         NavBar()
                     }
                 ) { innerPadding ->
-                    AppNavHost(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = innerPadding.calculateBottomPadding())
-                    )
+                    BottomSheetHost {
+                        AppNavHost(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = innerPadding.calculateBottomPadding())
+                        )
+                    }
                 }
 
 //                Scaffold(
@@ -103,3 +104,4 @@ class MainActivity() : ComponentActivity() {
         }
     }
 }
+

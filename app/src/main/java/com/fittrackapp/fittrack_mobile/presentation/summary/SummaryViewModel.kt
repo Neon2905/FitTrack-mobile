@@ -40,10 +40,6 @@ class SummaryViewModel @Inject constructor(
                 _state.value.selectedEndTime
             )
                 .collect { activities ->
-                    Log.i(
-                        "SummaryViewModel",
-                        "Fetched ${activities.size} activities for period: ${_state.value.selectedPeriod}"
-                    )
                     val (startIndex, endIndex) = when (_state.value.selectedPeriod) {
                         SelectedPeriod.TODAY -> 0 to 23
                         SelectedPeriod.THIS_WEEK -> 0 to 6
@@ -58,10 +54,6 @@ class SummaryViewModel @Inject constructor(
                             cal.get(java.util.Calendar.HOUR_OF_DAY) == index
                         }
                     }
-                    Log.i(
-                        "SummaryViewModel",
-                        "Filtered activities: ${filteredActivities[0].size}"
-                    )
                     _state.update {
                         it.copy(
                             filteredActivities = filteredActivities
@@ -86,11 +78,6 @@ class SummaryViewModel @Inject constructor(
 
     private fun setSelectedPeriod(selectedPeriod: SelectedPeriod) {
         _state.update { it.copy(selectedPeriod = selectedPeriod) }
-        Log.i("SummaryViewModel", "Selected period updated to: ${_state.value.selectedPeriod}")
-        Log.i(
-            "SummaryViewModel",
-            "Start time: ${_state.value.selectedStartTime}, End time: ${_state.value.selectedEndTime}"
-        )
         // TODO: Fix this stupid manual update [Find the correct way to trigger the flow]
         fetchActivities()
     }

@@ -82,7 +82,7 @@ fun ActivityRingSection(viewModel: DashboardViewModel = hiltViewModel()) {
 
                 Text(
                     modifier = Modifier
-                        .padding(bottom = 20.dp, end = 40.dp)
+                        .padding(bottom = 20.dp)
                         .align(Alignment.CenterVertically),
                     text = buildAnnotatedString {
                         withStyle(

@@ -1,11 +1,11 @@
 package com.fittrackapp.fittrack_mobile.data.local
 
 import android.content.Context
+import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.google.gson.Gson
 import com.fittrackapp.fittrack_mobile.domain.model.AuthUser
-import androidx.core.content.edit
+import com.google.gson.Gson
 import okhttp3.Cookie
 import okhttp3.HttpUrl
 

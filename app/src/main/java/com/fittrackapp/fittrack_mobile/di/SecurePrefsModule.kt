@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -15,7 +16,7 @@ object SecurePrefsModule {
     @Singleton
     @Provides
     fun provideSecurePrefsManager(
-        @dagger.hilt.android.qualifiers.ApplicationContext context: Context
+        @ApplicationContext context: Context
     ): SecurePrefsManager {
         return SecurePrefsManager(context)
     }

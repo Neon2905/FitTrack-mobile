@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.fittrackapp.fittrack_mobile.data.local.AppDatabase
 import com.fittrackapp.fittrack_mobile.data.local.dao.ActivityDao
 import com.fittrackapp.fittrack_mobile.data.local.dao.ChallengeDao
+import com.fittrackapp.fittrack_mobile.data.local.dao.DailySummaryDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,4 +28,7 @@ object DatabaseModule {
 
     @Provides
     fun provideChallengeDao(db: AppDatabase): ChallengeDao = db.challengeDao()
+
+    @Provides
+    fun provideDailySummaryDao(db: AppDatabase): DailySummaryDao = db.dailySummaryDao()
 }

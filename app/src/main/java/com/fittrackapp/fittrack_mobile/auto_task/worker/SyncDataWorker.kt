@@ -16,7 +16,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 
-class SyncDataWorker constructor(
+class SyncDataWorker(
     context: Context,
     workerParams: WorkerParameters,
 ) : Worker(context, workerParams) {
