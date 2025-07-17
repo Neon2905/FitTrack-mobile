@@ -1,21 +1,15 @@
 package com.fittrackapp.fittrack_mobile.presentation
 
 import android.util.Log
-import android.view.Menu
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fittrackapp.fittrack_mobile.data.local.dao.ActivityDao
-import com.fittrackapp.fittrack_mobile.navigation.Navigator.init
-import com.fittrackapp.fittrack_mobile.presentation.summary.step_summary.StepSummaryViewState
-import com.fittrackapp.fittrack_mobile.utils.getStartAndEndOfPeriod
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.DurationUnit
 
 @HiltViewModel
 class SummaryViewModel @Inject constructor(
@@ -28,8 +22,16 @@ class SummaryViewModel @Inject constructor(
     )
     val state = _state.asStateFlow()
 
-
     init {
+        viewModelScope.launch {
+            activityDao.getAll().collect { activities ->
+                _state.update {
+                    it.copy(
+                        activities = activities,
+                    )
+                }
+            }
+        }
         fetchActivities()
     }
 
@@ -66,7 +68,6 @@ class SummaryViewModel @Inject constructor(
     fun onSelectedPeriodChanged(
         option: MenuItem
     ) {
-        Log.i("SummaryViewModel", "Selected period changed: ${option.value}")
         when (option.value) {
             "TODAY" -> setSelectedPeriod(SelectedPeriod.TODAY)
             "THIS_WEEK" -> setSelectedPeriod(SelectedPeriod.THIS_WEEK)

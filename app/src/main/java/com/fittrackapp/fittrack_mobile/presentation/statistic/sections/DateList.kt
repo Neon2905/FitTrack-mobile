@@ -3,6 +3,7 @@ package com.fittrackapp.fittrack_mobile.presentation.statistic
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -23,8 +24,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fittrackapp.fittrack_mobile.data.local.entity.DailySummaryEntity
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
 import com.fittrackapp.fittrack_mobile.presentation.StatisticsViewModel
+import com.fittrackapp.fittrack_mobile.utils.toDateOrNull
+import com.fittrackapp.fittrack_mobile.utils.tryCastToLocalDateTime
 
 @Composable
 fun DateList(
@@ -32,25 +36,39 @@ fun DateList(
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val summaries: List<DailySummaryEntity> =
+        listOfNotNull(state.todaySummary) + state.dailySummaries
 
-    LazyRow {
-        items(state.activities) { activity ->
-            DateCard(activity, state.currentActivity, viewModel::onActivitySelected)
+    LazyRow(
+        modifier = Modifier
+            .wrapContentSize(),
+    ) {
+        items(summaries) { summary ->
+            DateCard(
+                summary,
+                state.currentSummary ?: summaries.firstOrNull(),
+                viewModel::onActivitySelected
+            )
         }
     }
 }
 
 @Composable
-fun DateCard(activity: Activity, currentActivity: Activity?, onSelect: (Activity) -> Unit = {}) {
-    val localDate = activity.startTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+fun DateCard(
+    summary: DailySummaryEntity,
+    currentSummary: DailySummaryEntity?,
+    onSelect: (DailySummaryEntity) -> Unit = {}
+) {
+    val date =
+        summary.date.toDateOrNull()
 
     Card(
         modifier = Modifier
             .padding(8.dp)
             .wrapContentSize()
-            .clickable { onSelect(activity) },
+            .clickable { onSelect(summary) },
         colors = CardDefaults.cardColors(
-            containerColor = if (currentActivity == activity) {
+            containerColor = if (currentSummary == summary) {
                 MaterialTheme.colorScheme.primaryContainer
             } else {
                 MaterialTheme.colorScheme.surfaceVariant
@@ -67,14 +85,20 @@ fun DateCard(activity: Activity, currentActivity: Activity?, onSelect: (Activity
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                text = DateTimeFormatter.ofPattern("dd").format(localDate),
+                text = date?.let {
+                    val localDate = it.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                    DateTimeFormatter.ofPattern("dd").format(localDate)
+                } ?: "",
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             )
             Text(
-                text = DateTimeFormatter.ofPattern("E").format(localDate),
+                text = date?.let {
+                    val localDate = it.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                    DateTimeFormatter.ofPattern("E").format(localDate)
+                } ?: "",
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface

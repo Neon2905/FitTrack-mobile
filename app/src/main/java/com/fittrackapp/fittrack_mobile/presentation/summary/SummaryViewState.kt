@@ -18,6 +18,7 @@ enum class SelectedPeriod {
 data class SummaryViewState(
     val selectedPeriod: SelectedPeriod = SelectedPeriod.THIS_YEAR,
     val filteredActivities: List<List<ActivitySummaryEntity>> = emptyList(),
+    val activities : List<ActivityEntity> = emptyList()
 ) {
     val selectedStartTime: Long
         get() = selectedPeriod.getStartOfPeriod()
@@ -29,9 +30,9 @@ data class SummaryViewState(
         get() = filteredActivities.sumOf { it.sumOf { activity -> activity.steps } }
 
     val totalDistance: Double
-        get() = filteredActivities.sumOf { it.sumOf { activity -> activity.distance / 1000 } }
+        get() = filteredActivities.sumOf { it.sumOf { activity -> activity.distance } }
 
-    val totalCalories: Int
-        get() = filteredActivities.sumOf { it.sumOf { activity -> activity.caloriesBurned.toInt() } }
+//    val totalCalories: Int
+//        get() = filteredActivities.sumOf { it.sumOf { activity -> activity.caloriesBurned.toInt() } }
 
 }

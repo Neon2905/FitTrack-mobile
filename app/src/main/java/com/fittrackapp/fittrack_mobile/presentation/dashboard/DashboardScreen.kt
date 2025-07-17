@@ -8,14 +8,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fittrackapp.fittrack_mobile.navigation.NavRoute
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
+import com.fittrackapp.fittrack_mobile.sheet.BottomSheetController
 import com.fittrackapp.fittrack_mobile.ui.theme.BluePrimary
 import com.fittrackapp.fittrack_mobile.ui.theme.blue
+import com.fittrackapp.fittrack_mobile.ui.theme.green
 import com.fittrackapp.fittrack_mobile.ui.theme.purple
 import com.fittrackapp.fittrack_mobile.utils.round
 
@@ -36,16 +39,26 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
 
                 OutlinedButton(
                     onClick = {
-                        Navigator.navigate(NavRoute.Register.LiveActivity.route)
+                        BottomSheetController.show {
+                            ActivityLogOption(
+                                onStartLive = { Navigator.navigate(NavRoute.Register.LiveActivity.route) },
+                                onLogManual = { Navigator.navigate(NavRoute.Register.LogActivity.route) },
+                                onDismiss = { BottomSheetController.hide() },
+                            )
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(70.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
                 )
                 {
                     Text(
                         "Start Activity",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.ExtraBold
+                        ),
+                        color = green
                     )
                 }
 

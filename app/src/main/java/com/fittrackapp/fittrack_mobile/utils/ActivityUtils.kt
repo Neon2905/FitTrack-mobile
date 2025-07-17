@@ -3,6 +3,7 @@ package com.fittrackapp.fittrack_mobile.utils
 import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityEntity
 import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityType
 import com.fittrackapp.fittrack_mobile.domain.model.Activity
+import kotlin.time.Duration
 
 fun Activity.asEntity(isUploaded: Boolean = false): ActivityEntity {
     return ActivityEntity(
@@ -43,6 +44,16 @@ fun ActivityEntity.asActivity(): Activity {
     )
 }
 
-fun ActivityEntity.toString(): String {
-    return "ActivityEntity(id=$id, type=$type, startTime=$startTime, endTime=$endTime, duration=$duration, distance=$distance, caloriesBurned=$caloriesBurned, steps=$steps, reps=$reps, challengeId=$challengeId, tracks=$tracks)"
+fun predictActivityType(distance: Double, duration: Duration): ActivityType {
+    val speed =
+        if (duration.inWholeMilliseconds > 0)
+            distance / (duration.inWholeMilliseconds / 1000.0 / 3600.0)
+        else
+            0.0 // km/h
+    return when {
+        speed < 5 -> ActivityType.WALKING
+        speed < 20 -> ActivityType.RUNNING
+        speed < 30 -> ActivityType.CYCLING
+        else -> ActivityType.UNKNOWN // Default case, can be adjusted based on actual data
+    }
 }

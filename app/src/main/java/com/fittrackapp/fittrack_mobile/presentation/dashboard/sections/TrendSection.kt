@@ -98,7 +98,7 @@ fun TrendSection(
                             else
                                 MaterialTheme.colorScheme.error,
                         label = "Distance",
-                        value = "${(state.averageDistance / 1000).round()} KM/DAY",
+                        value = "${(state.averageDistance).round()} KM/DAY",
                         valueColor = Color(0xFF3A80F2)
                     )
                 }

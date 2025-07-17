@@ -20,12 +20,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.fittrackapp.fittrack_mobile.data.local.dao.ActivityDao
 import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityEntity
 import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityType
+import com.fittrackapp.fittrack_mobile.presentation.register.activity_live.sections.ResultSheet
+import com.fittrackapp.fittrack_mobile.sheet.BottomSheetController
 import com.fittrackapp.fittrack_mobile.utils.CalorieUtils.calculateCalories
 import com.fittrackapp.fittrack_mobile.utils.Toast
+import com.fittrackapp.fittrack_mobile.utils.predictActivityType
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Date
@@ -59,15 +67,36 @@ class RegisterLiveActivityViewModel @Inject constructor(
 
     private var sensorManager: SensorManager? = null
     private var stepSensor: Sensor? = null
-    private var fusedLocationClient: FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(app)
 
     private var isTimerRunning = false
     private var locationCallback: LocationCallback? = null
 
+    private var fusedLocationClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(app)
+
+    val locationFlow: kotlinx.coroutines.flow.Flow<Location>
+
     init {
         sensorManager = app.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        locationFlow = callbackFlow<Location> {
+            val callback = object : LocationCallback() {
+                override fun onLocationResult(result: LocationResult) {
+                    result.lastLocation?.let { trySend(it).isSuccess }
+                }
+            }
+            val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000L).build()
+            try {
+                fusedLocationClient.requestLocationUpdates(request, callback, null)
+                awaitClose { fusedLocationClient.removeLocationUpdates(callback) }
+            } catch (e: SecurityException) {
+                close(e)
+            }
+        }
+
+        viewModelScope.launch {
+            fetchInitialLocation()
+        }
     }
 
     suspend fun fetchInitialLocation(): Location? {
@@ -82,20 +111,30 @@ class RegisterLiveActivityViewModel @Inject constructor(
 
         if (hasFineLocation || hasCoarseLocation) {
             return suspendCancellableCoroutine { cont ->
+                Log.i("RegisterLiveActivityViewModel", "Fetching initial location...")
                 fusedLocationClient.lastLocation
-                    .addOnSuccessListener { location ->
-                        if (location != null) {
-                            _state.value = _state.value.copy(currentLocation = location)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val location = task.result
+                            Log.i(
+                                "RegisterLiveActivityViewModel",
+                                "Fetched initial location: $location"
+                            )
+                            if (location != null) {
+                                _state.value = _state.value.copy(currentLocation = location)
+                            }
+                            cont.resume(location)
+                        } else {
+                            cont.resumeWithException(
+                                task.exception ?: Exception("Unknown error fetching location")
+                            )
                         }
-                        cont.resume(location)
-                    }
-                    .addOnFailureListener { e ->
-                        cont.resumeWithException(e)
                     }
             }
         }
         return null
     }
+
 
     fun onTargetTypeChange(newType: String) {
         _state.value = _state.value.copy(
@@ -135,44 +174,81 @@ class RegisterLiveActivityViewModel @Inject constructor(
         isTimerRunning = false
     }
 
-    fun stop() {
+    fun reset() {
         _state.value =
             RegisterLiveActivityViewState(
                 targetValue = _state.value.targetValue,
                 targetType = _state.value.targetType
-            ) // Reset to initial state with target value preserved
-        stopSensors()
-        stopLocationUpdates()
-        countDownTimer?.cancel()
-        isTimerRunning = false
+            )
     }
 
-    fun onComplete() {
-        viewModelScope.launch {
-            save()
-            Toast.show("Activity saved successfully!")
+    suspend fun save() {
+        _state.update {
+            it.copy(
+                isSaving = true,
+            )
         }
+        val activityEntity =
+            ActivityEntity(
+                type = _state.value.activityType,
+                startTime = _state.value.startTime ?: Date(),
+                endTime = Date(),
+                duration = _state.value.duration.inWholeMilliseconds,
+                distance = _state.value.distance/1000,
+                caloriesBurned = _state.value.calories,
+                steps = _state.value.steps
+            )
+
+        activityDao.add(activityEntity).also {
+            _state.update {
+                it.copy(
+                    isSaving = false,
+                    showResultModal = false
+                )
+            }
+            Toast.show(
+                "Activity saved successfully!",
+            )
+            reset()
+        }
+    }
+
+    fun showResultModal() {
+        //
+        // State listener cannot see if state is originally true.
+        // So it needs to update it first to false, then to true.
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    showResultModal = false,
+                )
+            }
+            delay(100) // Small delay to ensure state is updated
+            _state.update {
+                it.copy(
+                    showResultModal = true,
+                )
+            }
+        }
+    }
+
+    fun onCompleteOrStopped() {
+        val progress = getCurrentValue() / _state.value.targetValue
+        val isTargetReached = progress >= 1.0
+        val isStoppedWithProgress = !isTargetReached && progress >= 0.1
+
+        if (isTargetReached || isStoppedWithProgress) {
+            // Update state to show result bottom sheet modal
+            showResultModal()
+        } else {
+            reset()
+        }
+
         stopSensors()
         stopLocationUpdates()
         countDownTimer?.cancel()
         isTimerRunning = false
         _state.value = _state.value.copy(isLive = false, onPause = false)
-    }
-
-    suspend fun save() {
-        val activityEntity =
-            ActivityEntity(
-                id = 0, // Auto-generated ID
-                type = ActivityType.WALKING, // TODO: Set appropriate type based on user behavior
-                startTime = _state.value.startTime ?: Date(),
-                endTime = Date(),
-                duration = _state.value.duration.inWholeMilliseconds,
-                distance = _state.value.distance,
-                caloriesBurned = _state.value.calories,
-                steps = _state.value.steps
-            )
-
-        activityDao.add(activityEntity)
     }
 
     private fun getTargetDelta(): Double {
@@ -187,19 +263,24 @@ class RegisterLiveActivityViewModel @Inject constructor(
 
     fun increaseTargetValue() {
         val delta: Double = getTargetDelta()
-        _state.value = _state.value.copy(targetValue = _state.value.targetValue + delta)
+        _state.update {
+            it.copy(
+                targetValue = _state.value.targetValue + delta
+            )
+        }
     }
 
     fun decreaseTargetValue() {
         val delta: Double = getTargetDelta()
-        _state.value =
-            _state.value.copy(
+        _state.update {
+            it.copy(
                 targetValue =
                     if (_state.value.targetValue > delta)
                         _state.value.targetValue - delta
                     else
                         _state.value.targetValue
             )
+        }
     }
 
     private fun startSensors() {
@@ -210,63 +291,6 @@ class RegisterLiveActivityViewModel @Inject constructor(
 
     private fun stopSensors() {
         sensorManager?.unregisterListener(this)
-    }
-
-
-    /** IMPORTANT: If the app crashes when restarting timer, it's not my app that failed. Disable 'Live Edit' option in Android Studio.
-    It's still in beta and causes issues with long-running tasks like timers.**/
-    @RequiresPermission(anyOf = [ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION])
-    private fun startLocationUpdates() {
-        // Always stop previous updates before starting new ones
-        stopLocationUpdates()
-
-        val hasFineLocation = ContextCompat.checkSelfPermission(
-            app,
-            ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        val hasCoarseLocation = ContextCompat.checkSelfPermission(
-            app,
-            ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-
-        if (hasFineLocation || hasCoarseLocation) {
-            val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000L).build()
-            locationCallback = object : LocationCallback() {
-                override fun onLocationResult(result: LocationResult) {
-                    if (!_state.value.isLive || _state.value.onPause) return
-                    val newLocation = result.lastLocation ?: return
-                    val tracks = _state.value.tracks.toMutableList()
-                    if (tracks.isEmpty()) {
-                        tracks.add(listOf(newLocation))
-                    } else {
-                        val lastTrack = tracks.last().toMutableList()
-                        lastTrack.add(newLocation)
-                        tracks[tracks.lastIndex] = lastTrack
-                    }
-                    val newDistance = calculateTotalDistance(tracks)
-                    _state.value = _state.value.copy(
-                        tracks = tracks,
-                        distance = newDistance
-                    )
-                }
-            }
-            try {
-                fusedLocationClient.requestLocationUpdates(
-                    request,
-                    locationCallback as LocationCallback,
-                    null
-                )
-            } catch (e: SecurityException) {
-                _state.value = _state.value.copy(errorMessage = "Location permission denied.")
-            }
-        } else {
-            _state.value = _state.value.copy(errorMessage = "Location permissions are not granted.")
-        }
-    }
-
-    private fun stopLocationUpdates() {
-        locationCallback?.let { fusedLocationClient.removeLocationUpdates(it) }
-        locationCallback = null
     }
 
     fun getCurrentValue() = when (_state.value.targetType) {
@@ -309,8 +333,7 @@ class RegisterLiveActivityViewModel @Inject constructor(
                         calories = (_state.value.calories + deltaCalorie)
                     )
                     if (getCurrentValue() >= _state.value.targetValue) {
-                        onComplete()
-                        stop()
+                        onCompleteOrStopped()
                         _state.value = _state.value.copy(isTargetReached = true)
                         cancel()
                         isTimerRunning = false
@@ -326,6 +349,64 @@ class RegisterLiveActivityViewModel @Inject constructor(
                     isTimerRunning = false
                 }
             }.start()
+    }
+
+    /** IMPORTANT: If the app crashes when restarting timer, it's not my app that failed. Disable 'Live Edit' option in Android Studio.
+    It's still in beta and causes issues with long-running tasks like timers.**/
+    @RequiresPermission(anyOf = [ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION])
+    private fun startLocationUpdates() {
+        // Always stop previous updates before starting new ones
+        stopLocationUpdates()
+
+        val hasFineLocation = ContextCompat.checkSelfPermission(
+            app,
+            ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarseLocation = ContextCompat.checkSelfPermission(
+            app,
+            ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasFineLocation || hasCoarseLocation) {
+            val request =
+                LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000L).build()
+            locationCallback = object : LocationCallback() {
+                override fun onLocationResult(result: LocationResult) {
+                    if (!_state.value.isLive || _state.value.onPause) return
+                    val newLocation = result.lastLocation ?: return
+                    val tracks = _state.value.tracks.toMutableList()
+                    if (tracks.isEmpty()) {
+                        tracks.add(listOf(newLocation))
+                    } else {
+                        val lastTrack = tracks.last().toMutableList()
+                        lastTrack.add(newLocation)
+                        tracks[tracks.lastIndex] = lastTrack
+                    }
+                    val newDistance = calculateTotalDistance(tracks)
+                    _state.value = _state.value.copy(
+                        tracks = tracks,
+                        distance = newDistance
+                    )
+                }
+            }
+            try {
+                fusedLocationClient.requestLocationUpdates(
+                    request,
+                    locationCallback as LocationCallback,
+                    null
+                )
+            } catch (e: SecurityException) {
+                _state.value = _state.value.copy(errorMessage = "Location permission denied.")
+            }
+        } else {
+            _state.value =
+                _state.value.copy(errorMessage = "Location permissions are not granted.")
+        }
+    }
+
+    private fun stopLocationUpdates() {
+        locationCallback?.let { fusedLocationClient.removeLocationUpdates(it) }
+        locationCallback = null
     }
 
     private var baseSteps: Int? = null

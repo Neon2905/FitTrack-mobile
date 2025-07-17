@@ -14,6 +14,7 @@ sealed class ApiError(open val message: String) {
     data class Unauthorized(override val message: String) : ApiError(message)
     data class BadRequest(override val message: String) : ApiError(message)
     data class NotFound(override val message: String) : ApiError(message)
+    data class Conflict(override val message: String) : ApiError(message)
     data class InternalServerError(override val message: String) : ApiError(message)
     data class ServiceUnavailable(override val message: String) : ApiError(message)
     data class Forbidden(override val message: String) : ApiError(message)

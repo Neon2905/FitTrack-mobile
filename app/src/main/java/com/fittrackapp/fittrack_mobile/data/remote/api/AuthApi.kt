@@ -18,5 +18,8 @@ interface AuthApi {
     @POST("register")
     suspend fun register(@Body request: RegisterRequest): AuthUser
 
+    @POST("check")
+    suspend fun checkAuth(): AuthUser
+
     suspend fun logout(): Boolean
 }

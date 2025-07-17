@@ -2,6 +2,7 @@ package com.fittrackapp.fittrack_mobile.presentation.auth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,9 +14,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fittrackapp.fittrack_mobile.presentation.AuthViewModel
+import com.fittrackapp.fittrack_mobile.ui.theme.BluePrimary
+import com.patrykandpatrick.vico.compose.component.shape.shader.horizontalGradient
 
 @Composable
 fun SignupInputFields(
@@ -67,6 +72,20 @@ fun SignupInputFields(
         Text("Remember me")
     }
 
+    if (state.errorMessage != null) {
+        Text(
+            text = state.errorMessage ?: "",
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
+            style = MaterialTheme.typography.bodySmall.copy(
+                color = Color.Red,
+                fontWeight = FontWeight.Bold
+            ),
+        )
+    }
+
     ExtendedFloatingActionButton(
         onClick = viewModel::signup,
         modifier = Modifier
@@ -100,7 +119,7 @@ fun SignupInputFields(
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = "Sign In",
-            color = Color.Blue,
+            color = BluePrimary,
             modifier = Modifier.clickable {
                 viewModel.onIsOnSignInChanged(true)
             }

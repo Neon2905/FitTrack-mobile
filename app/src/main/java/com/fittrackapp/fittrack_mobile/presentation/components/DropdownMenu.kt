@@ -33,7 +33,7 @@ fun DropdownMenu(
     DropdownMenu(
         expanded = true,
         onDismissRequest = onDismissRequest,
-        modifier = modifier.then(Modifier.width(IntrinsicSize.Min))
+        modifier = modifier.then(Modifier.width(IntrinsicSize.Min)),
     ) {
         menuItems.forEach { item ->
             DropdownMenuItem(

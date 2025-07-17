@@ -42,7 +42,6 @@ fun ProgressRing(
     }
 
 
-
     Box(
         modifier = modifier
     ){

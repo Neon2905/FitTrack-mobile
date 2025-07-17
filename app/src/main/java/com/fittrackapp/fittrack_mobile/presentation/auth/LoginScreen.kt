@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.presentation.auth
+package com.fittrackapp.fittrack_mobile.presentation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
@@ -15,6 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fittrackapp.fittrack_mobile.presentation.auth.LoginFooter
+import com.fittrackapp.fittrack_mobile.presentation.auth.LoginHeader
+import com.fittrackapp.fittrack_mobile.presentation.auth.LoginInputFields
 
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

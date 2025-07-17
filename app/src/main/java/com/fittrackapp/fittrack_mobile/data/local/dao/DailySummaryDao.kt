@@ -15,6 +15,12 @@ interface DailySummaryDao {
     @Query("SELECT * FROM daily_summary WHERE date = :date")
     fun getByDate(date: String): Flow<DailySummaryEntity?>
 
+    @Query("SELECT * FROM daily_summary ORDER BY date DESC LIMIT 1")
+    fun getLast(): DailySummaryEntity?
+
     @Query("SELECT * FROM daily_summary ORDER BY date DESC")
     fun getAll(): Flow<List<DailySummaryEntity>>
+
+    @Query("DELETE FROM daily_summary")
+    suspend fun deleteAll()
 }

@@ -15,12 +15,10 @@ import com.fittrackapp.fittrack_mobile.auto_task.utils.scheduleDailySummaryWorke
 import com.fittrackapp.fittrack_mobile.auto_task.worker.DailySummaryWorker
 
 
-// TODO: This is not a valid method.
 class DailySummaryReceiver : BroadcastReceiver() {
     @RequiresApi(Build.VERSION_CODES.S)
     @RequiresPermission(Manifest.permission.SCHEDULE_EXACT_ALARM)
     override fun onReceive(context: Context, intent: Intent?) {
-        Log.d("DailySummaryReceiver", "Received daily summary intent")
         val request = OneTimeWorkRequestBuilder<DailySummaryWorker>().build()
         WorkManager.getInstance(context).enqueue(request)
 

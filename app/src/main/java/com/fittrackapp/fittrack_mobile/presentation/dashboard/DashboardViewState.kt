@@ -20,49 +20,68 @@ data class DashboardViewState(
 
     val hourlyDistanceData: List<Float> = List(24) { hour ->
         activities.sumOf { activity ->
-            if (activity.startTime.hours == hour) (activity.distance / 1000).toInt() else 0
+            if (activity.startTime.hours == hour) (activity.distance) else 0.0
         }.toFloat()
     }
 
     val totalDistance: Double
-        get() = activities.sumOf { it.distance / 1000 }
+        get() = activities.sumOf { it.distance }
 
     val totalCalories: Int
         get() = activities.sumOf { it.caloriesBurned }.toInt()
 
-    private val averageLastWeekCalorie: Int
+    private val lastWeekAverageCalorie: Double
         get() =
             if (lastWeekActivities.isNotEmpty())
-                (lastWeekActivities.sumOf { it.caloriesBurned } / lastWeekActivities.size).toInt()
-            else
-                0
-
-    val averageCalorieBurned: Double
-        get() = activities.sumOf { it.caloriesBurned } + averageLastWeekCalorie / 2
-
-    val isCalorieTrendUp = averageCalorieBurned >= averageLastWeekCalorie
-
-    private val averageLastWeekDistance: Double
-        get() =
-            if (lastWeekActivities.isNotEmpty())
-                lastWeekActivities.sumOf { it.distance } / lastWeekActivities.size
+                (lastWeekActivities.sumOf { it.caloriesBurned } / lastWeekActivities.size.toDouble())
             else
                 0.0
 
-    val averageDistance: Double
-        get() = activities.sumOf { it.distance } + averageLastWeekDistance / 2
+    private val todayAverageCalorie: Double
+        get() =
+            if (activities.isNotEmpty())
+                (activities.sumOf { it.caloriesBurned } / activities.size.toDouble())
+            else
+                0.0
 
-    val isDistanceTrendUp = averageDistance >= averageLastWeekDistance
+    val averageCalorieBurned: Int
+        get() = (todayAverageCalorie + lastWeekAverageCalorie).toInt() / 2
 
-    private val averageLastWeekSteps: Int
+    val isCalorieTrendUp = averageCalorieBurned >= lastWeekAverageCalorie
+
+    private val lastWeekAverageDistance: Double
         get() =
             if (lastWeekActivities.isNotEmpty())
-                lastWeekActivities.sumOf { it.steps } / lastWeekActivities.size
+                lastWeekActivities.sumOf { it.distance } / lastWeekActivities.size.toDouble()
             else
-                0
+                0.0
+
+    private val todayAverageDistance: Double
+        get() =
+            if (activities.isNotEmpty())
+                activities.sumOf { it.distance } / activities.size.toDouble()
+            else 0.0
+
+    val averageDistance: Double
+        get() = (todayAverageDistance + lastWeekAverageDistance) / 2.0
+
+    val isDistanceTrendUp = averageDistance >= lastWeekAverageDistance
+
+    private val lastWeekAverageSteps: Double
+        get() =
+            if (lastWeekActivities.isNotEmpty())
+                lastWeekActivities.sumOf { it.steps } / lastWeekActivities.size.toDouble()
+            else
+                0.0
+
+    private val todayAverageSteps: Double
+        get() =
+            if (activities.isNotEmpty())
+                activities.sumOf { it.steps } / activities.size.toDouble()
+            else 0.0
 
     val averageSteps: Int
-        get() = activities.sumOf { it.steps } + averageLastWeekSteps / 2
+        get() = (todayAverageSteps + lastWeekAverageSteps).toInt() / 2
 
-    val isStepsTrendUp = averageSteps >= averageLastWeekSteps
+    val isStepsTrendUp = averageSteps >= lastWeekAverageSteps
 }

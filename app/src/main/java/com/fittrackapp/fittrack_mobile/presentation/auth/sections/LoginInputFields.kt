@@ -19,7 +19,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fittrackapp.fittrack_mobile.presentation.AuthViewModel
 import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityViewModel
+import com.fittrackapp.fittrack_mobile.ui.theme.BluePrimary
 
 @Composable
 fun LoginInputFields(
@@ -30,6 +32,7 @@ fun LoginInputFields(
     OutlinedTextField(
         value = state.username,
         onValueChange = viewModel::onUsernameChanged,
+        singleLine = true,
         label = { Text("Username") },
         modifier = Modifier.fillMaxWidth()
     )
@@ -38,6 +41,7 @@ fun LoginInputFields(
     OutlinedTextField(
         value = state.password,
         onValueChange = viewModel::onPasswordChanged,
+        singleLine = true,
         label = { Text("Password") },
         visualTransformation = PasswordVisualTransformation(),
         modifier = Modifier.fillMaxWidth()
@@ -55,7 +59,7 @@ fun LoginInputFields(
     }
 
     // Login button
-    ExtendedFloatingActionButton (
+    ExtendedFloatingActionButton(
         onClick = viewModel::login,
         modifier = Modifier
             .fillMaxWidth()
@@ -108,7 +112,7 @@ fun LoginInputFields(
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = "Sign Up",
-            color = Color.Blue,
+            color = BluePrimary,
             modifier = Modifier.clickable {
                 viewModel.onIsOnSignInChanged(false)
             }

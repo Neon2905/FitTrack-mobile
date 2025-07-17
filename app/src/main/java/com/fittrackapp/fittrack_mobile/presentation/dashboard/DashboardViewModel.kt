@@ -1,15 +1,9 @@
 package com.fittrackapp.fittrack_mobile.presentation.dashboard
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
 import com.fittrackapp.fittrack_mobile.data.local.dao.ActivityDao
-import com.fittrackapp.fittrack_mobile.data.local.entity.ActivityEntity
-import com.fittrackapp.fittrack_mobile.domain.model.Activity
-import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
-import com.fittrackapp.fittrack_mobile.presentation.auth.AuthViewState
 import com.fittrackapp.fittrack_mobile.utils.getEndOfDay
 import com.fittrackapp.fittrack_mobile.utils.getStartAndEndOfDay
 import com.fittrackapp.fittrack_mobile.utils.getStartOfDay
@@ -18,8 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.ZoneId
 import java.util.Date
 import javax.inject.Inject
 
@@ -53,7 +45,7 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun getUsername(): String? {
+    fun getUsername(): String {
         return securePrefsManager.getAuthUser()?.username ?: "Guest"
     }
 }

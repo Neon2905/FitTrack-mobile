@@ -24,8 +24,8 @@ data class NavItem(
 
 val navItems = listOf(
     NavItem(NavRoute.Dashboard.route, Icons.Default.Home, "Home"),
-    NavItem(NavRoute.Register.LiveActivity.route, Icons.AutoMirrored.Filled.Assignment, "Activity"),
-    NavItem(NavRoute.ImportedScreen.route, Icons.Default.InsertChart, "Statistics"),
+    NavItem(NavRoute.Statistics.route, Icons.Default.InsertChart, "Statistics"),
+    NavItem(NavRoute.Summary.route, Icons.AutoMirrored.Filled.Assignment, "Summary"),
     NavItem(NavRoute.Settings.route, Icons.Default.Settings, "Settings")
 )
 

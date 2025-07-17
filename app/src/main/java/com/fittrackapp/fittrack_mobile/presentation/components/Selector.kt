@@ -25,10 +25,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Selector(
+    modifier: Modifier = Modifier,
     options: List<MenuItem>,
     selectedOption: MenuItem? = options.firstOrNull(),
     onOptionSelected: (MenuItem) -> Unit,
-    modifier: Modifier = Modifier,
     backgroundColor: Color = Color(0xFF434344),
     selectedColor: Color = Color(0xFF797373),
     textColor: Color = Color.White.copy(alpha = 0.8f),
@@ -54,7 +54,11 @@ fun Selector(
                         .fillMaxHeight()
                         .clickable { onOptionSelected(option) }
                         .background(
-                            color = if (isSelected) selectedColor else Color.Transparent,
+                            color =
+                                if (isSelected)
+                                    selectedColor
+                                else
+                                    Color.Transparent,
                             shape = RoundedCornerShape(12.dp)
                         )
                         .padding(vertical = 8.dp),
@@ -62,9 +66,13 @@ fun Selector(
                 ) {
                     Text(
                         text = option.title,
-                        color = if (isSelected) selectedTextColor else textColor,
+                        color =
+                            if (isSelected)
+                                selectedTextColor
+                            else
+                                textColor,
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.labelMedium
                     )
                 }
 

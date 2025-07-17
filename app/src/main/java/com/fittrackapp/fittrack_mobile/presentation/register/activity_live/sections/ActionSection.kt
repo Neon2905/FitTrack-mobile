@@ -52,7 +52,7 @@ fun ActionSection(
         } else {
             if (state.onPause) {
                 Button(
-                    onClick = viewModel::stop,
+                    onClick = viewModel::onCompleteOrStopped,
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .fillMaxHeight(),

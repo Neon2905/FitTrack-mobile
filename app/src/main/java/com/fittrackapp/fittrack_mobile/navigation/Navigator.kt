@@ -21,11 +21,15 @@ object Navigator {
     private val _currentRoute = MutableStateFlow<String>("")
     val currentRoute: StateFlow<String> = _currentRoute.asStateFlow()
 
+    private val _previousRoute = MutableStateFlow<String>("")
+    val previousRoute: StateFlow<String> = _previousRoute.asStateFlow()
+
     fun setController(controller: NavHostController) {
         navController = controller
     }
 
-    internal fun setCurrentRoute(route: String) {
+    fun setCurrentRoute(route: String) {
+        _previousRoute.value = _currentRoute.value
         _currentRoute.value = route
     }
 

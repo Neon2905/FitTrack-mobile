@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.presentation.auth
+package com.fittrackapp.fittrack_mobile.presentation
 
 data class AuthViewState(
     val isSigningIn: Boolean = false,

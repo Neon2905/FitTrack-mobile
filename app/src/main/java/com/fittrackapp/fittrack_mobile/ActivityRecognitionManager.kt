@@ -28,6 +28,7 @@ class ActivityRecognitionManager(private val context: Context) {
     fun startUpdates(intervalMillis: Long = 5000L) {
         client.requestActivityUpdates(intervalMillis, pendingIntent)
             .addOnSuccessListener {
+                // TODO:
                 Log.d("ActivityRecognition", "Started activity updates")
             }
             .addOnFailureListener {

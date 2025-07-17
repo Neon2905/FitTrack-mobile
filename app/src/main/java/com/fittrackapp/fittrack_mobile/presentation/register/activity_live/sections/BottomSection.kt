@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CornerSize
@@ -22,10 +21,9 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fittrackapp.fittrack_mobile.presentation.register.RegisterLiveActivityViewModel
-import com.fittrackapp.fittrack_mobile.presentation.register.activity_live.LiveSection
 
 @Composable
-fun BottomSheetSection(
+fun BottomSection(
     viewModel: RegisterLiveActivityViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()

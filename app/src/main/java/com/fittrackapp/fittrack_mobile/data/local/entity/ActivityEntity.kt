@@ -23,5 +23,5 @@ data class ActivityEntity(
 )
 
 enum class ActivityType {
-    WALKING, RUNNING, CYCLING, WEIGHTLIFTING, UNKNOWN
+    WALKING, RUNNING, CYCLING, WEIGHTLIFTING, SWIMMING, UNKNOWN
 }

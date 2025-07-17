@@ -65,17 +65,6 @@ fun ArcProgressIndicator(
                 useCenter = false,
                 style = stroke
             )
-
-//            // Optional: Arrow tip
-//            val radius = size.toPx() / 2
-//            val angleRad = Math.toRadians((startAngle + sweep).toDouble())
-//            val x = center.x + cos(angleRad) * (radius - stroke.width / 2)
-//            val y = center.y + sin(angleRad) * (radius - stroke.width / 2)
-//            drawCircle(
-//                color = ringColor,
-//                radius = strokeWidth.toPx() / 3,
-//                center = Offset(x.toFloat(), y.toFloat())
-//            )
         }
 
         // Text inside ring

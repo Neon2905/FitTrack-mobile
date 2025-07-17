@@ -2,6 +2,7 @@ package com.fittrackapp.fittrack_mobile.presentation.dashboard
 
 import android.widget.Space
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -9,12 +10,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.elevatedCardElevation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,8 +33,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fittrackapp.fittrack_mobile.data.local.prefs.PrefKeys
 import com.fittrackapp.fittrack_mobile.ui.theme.DarkRedPink
 import com.fittrackapp.fittrack_mobile.ui.theme.RedPink
 
@@ -42,6 +52,9 @@ fun ActivityRingSection(viewModel: DashboardViewModel = hiltViewModel()) {
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
     ) {
+        val dailyCalorieGoal by PrefKeys.dailyCalorieGoalFlow.collectAsStateWithLifecycle(
+            100
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -66,17 +79,31 @@ fun ActivityRingSection(viewModel: DashboardViewModel = hiltViewModel()) {
             }
 
             Row {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(150.dp),
-                    progress = {
-                        (state.totalCalories.toFloat()) / 500f
-                    },
-                    color = RedPink,
-                    trackColor = DarkRedPink,
-                    strokeWidth = 30.dp,
-                    gapSize = 10.dp,
-                )
+                Box {
+                    if (state.totalCalories < dailyCalorieGoal.toFloat()) {
+                        Icon(
+                            modifier = Modifier
+                                .size(25.dp)
+                                .align(Alignment.TopCenter)
+                                .offset(x = 1.dp, y = 2.dp)
+                                .zIndex(10f),
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                            contentDescription = "Activity Ring Icon",
+                            tint = DarkRedPink
+                        )
+                    }
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(150.dp),
+                        progress = {
+                            (state.totalCalories.toFloat()) / dailyCalorieGoal.toFloat()
+                        },
+                        color = RedPink,
+                        trackColor = DarkRedPink,
+                        strokeWidth = 30.dp,
+                        gapSize = 10.dp,
+                    )
+                }
 
                 Spacer(modifier = Modifier.weight(1f))
 
@@ -98,7 +125,7 @@ fun ActivityRingSection(viewModel: DashboardViewModel = hiltViewModel()) {
                                     fontWeight = FontWeight.Bold
                                 )
                         ) {
-                            append("${state.totalCalories}/500 CAL")
+                            append("${state.totalCalories}/${dailyCalorieGoal.toInt()} CAL")
                         }
                     },
                 )

@@ -18,16 +18,16 @@ import androidx.compose.ui.unit.dp
 fun BottomSheetModal(
     modifier: Modifier = Modifier,
     sheetState: SheetState,
-    onDismiss: () -> Unit,
-    content: @Composable ColumnScope.() -> Unit
+    onDismissRequest: () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     ModalBottomSheet(
         modifier = modifier,
-        onDismissRequest = onDismiss,
+        onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         tonalElevation = 8.dp,
-        dragHandle = { BottomSheetDefaults.DragHandle() },
+
     ) {
         Column(
             modifier = Modifier

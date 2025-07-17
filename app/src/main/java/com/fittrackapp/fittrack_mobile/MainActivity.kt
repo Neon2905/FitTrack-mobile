@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.fittrackapp.fittrack_mobile.data.local.SecurePrefsManager
 import com.fittrackapp.fittrack_mobile.navigation.AppNavHost
@@ -58,7 +60,6 @@ class MainActivity() : ComponentActivity() {
                     ACCESS_COARSE_LOCATION
                 ) != PERMISSION_GRANTED
             ) {
-                Log.i("MainActivity", "Requesting location permissions")
                 requestPermissions(
                     arrayOf(
                         ACCESS_FINE_LOCATION,
@@ -68,6 +69,7 @@ class MainActivity() : ComponentActivity() {
                 )
             }
         }
+
         enableEdgeToEdge()
         setContent {
             FitTrackMobileTheme {
@@ -79,11 +81,20 @@ class MainActivity() : ComponentActivity() {
                     }
                 ) { innerPadding ->
                     BottomSheetHost {
-                        AppNavHost(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = innerPadding.calculateBottomPadding())
-                        )
+                        Box(
+                            Modifier.fillMaxSize()
+                        ) {
+//                            Image(
+//                                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+//                                contentDescription = "Background",
+//                                modifier = Modifier.fillMaxSize()
+//                            )
+                            AppNavHost(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = innerPadding.calculateBottomPadding())
+                            )
+                        }
                     }
                 }
 

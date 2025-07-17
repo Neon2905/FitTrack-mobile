@@ -8,8 +8,9 @@ import com.fittrackapp.fittrack_mobile.domain.model.NetworkError
 
 interface ActivityRepository {
     suspend fun getAll(): Either<NetworkError, List<Activity>>
-
     suspend fun register(activity: Activity): Either<NetworkError, Boolean>
 
-    suspend fun sync(request: ActivitySyncRequest): Either<NetworkError, List<Activity>>
+    suspend fun registerBulk(activities: List<Activity>): Either<NetworkError, Int>
+
+    suspend fun sync(exceptions: List<Int>): Either<NetworkError, List<Activity>>
 }

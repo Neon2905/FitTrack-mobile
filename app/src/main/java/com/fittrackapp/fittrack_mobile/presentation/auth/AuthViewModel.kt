@@ -1,4 +1,4 @@
-package com.fittrackapp.fittrack_mobile.presentation.auth
+package com.fittrackapp.fittrack_mobile.presentation
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -11,6 +11,7 @@ import com.fittrackapp.fittrack_mobile.domain.repository.SecurePrefsRepository
 import com.fittrackapp.fittrack_mobile.utils.Toast
 import com.fittrackapp.fittrack_mobile.navigation.NavRoute
 import com.fittrackapp.fittrack_mobile.navigation.Navigator
+import com.fittrackapp.fittrack_mobile.utils.isValidEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,9 +24,7 @@ class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val securePrefsManager: SecurePrefsManager
 ) : ViewModel() {
-
-    // TODO: remove hardcoded values later
-    private val _state = MutableStateFlow(AuthViewState(username = "Neon", password = "Password"))
+    private val _state = MutableStateFlow(AuthViewState())
     val state = _state.asStateFlow()
 
     fun onIsOnSignInChanged(value: Boolean) {
@@ -53,27 +52,33 @@ class AuthViewModel @Inject constructor(
     }
 
     fun login() {
-        // TODO: this line below ain't properly working
         if (state.value.isSigningIn)
             return
+
+        _state.update {
+            it.copy(
+                isSigningIn = true,
+                errorMessage = null
+            )
+        }
 
         viewModelScope.launch {
             _state.update { it.copy(isSigningIn = true) }
 
-            authRepository.login(state.value.username, state.value.password)
-                .onRight { authUser ->
-                    Log.i("AuthViewModel", "Login successful: $authUser")
-                    securePrefsManager.saveAuthUser(authUser)
-                    Navigator.navigate(NavRoute.Dashboard.route);
-                }.onLeft { error ->
-                    _state.update {
-                        it.copy(
-                            errorMessage = error.error.message
-                        )
+            try {
+                authRepository.login(_state.value.username, _state.value.password)
+                    .onRight { authUser ->
+                        securePrefsManager.saveAuthUser(authUser)
+                        Log.i("AuthViewModel", "Login successful: $authUser")
+                        Navigator.navigate(NavRoute.Dashboard.route);
+                    }.onLeft { error ->
+                        Toast.show(error.error.message)
                     }
-                    Toast.show(error.error.message)
-                }
-            _state.update { it.copy(isSigningIn = false) }
+            } catch (e: Exception) {
+                Log.e("AuthViewModel", "Registration failed: ${e.message}")
+            }.also {
+                _state.update { it.copy(isSigningIn = false) }
+            }
         }
     }
 
@@ -81,23 +86,49 @@ class AuthViewModel @Inject constructor(
         if (state.value.isRegistering)
             return
 
+        if (!state.value.email.isValidEmail()) {
+            return _state.update {
+                it.copy(
+                    errorMessage = (it.errorMessage ?: "") + "Please enter a valid email address.\n"
+                )
+            }
+        }
+
+        if (state.value.password != state.value.confirmPassword) {
+            return _state.update {
+                it.copy(
+                    errorMessage = (it.errorMessage ?: "") + "Passwords do not match.\n"
+                )
+            }
+        }
+
         viewModelScope.launch {
-            _state.update { it.copy(isRegistering = true) }
+            _state.update {
+                it.copy(
+                    isRegistering = true,
+                    errorMessage = null
+                )
+            }
 
-            authRepository.register(state.value.username, state.value.password)
-                .onRight { authUser ->
-                    Log.i("AuthViewModel", "SignUp successful: $authUser")
-                    Navigator.navigate(NavRoute.Dashboard.route);
-                }.onLeft { error ->
-                    _state.update {
-                        it.copy(
-                            errorMessage = error.error.message
-                        )
+            try {
+                authRepository.register(
+                    _state.value.email,
+                    _state.value.username,
+                    _state.value.password
+                )
+                    .onRight { authUser ->
+                        securePrefsManager.saveAuthUser(authUser)
+                        Log.i("AuthViewModel", "Registered successfully: $authUser")
+                        Navigator.navigate(NavRoute.Dashboard.route);
+                    }.onLeft { error ->
+                        Toast.show(error.error.message)
                     }
-                    Toast.show(error.error.message)
-                }
 
-            _state.update { it.copy(isRegistering = false) }
+            } catch (e: Exception) {
+                Log.e("AuthViewModel", "Registration failed: ${e.message}")
+            }.also {
+                _state.update { it.copy(isRegistering = false) }
+            }
         }
     }
 }
