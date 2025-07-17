@@ -58,13 +58,13 @@ FitTrack-mobile is a modern Android fitness tracking app built with Kotlin, Jetp
 
 - **`app/`**: Main Android app module containing source code, resources, and configuration files.
   - **`src/main/java/com/fittrackapp/fittrack_mobile/`**: Core application logic.
-    - **`data/`**: Data layer including local database, entities, DAOs, and remote API interfaces.
-    - **`presentation/`**: UI components, screens, and ViewModels for user interaction.
-    - **`auto_task/`**: Background workers for tasks like daily summaries and data synchronization.
-    - **`di/`**: Dependency injection setup using Hilt modules.
-    - **[`navigation/`](app/src/main/java/com/fittrackapp/fittrack_mobile/navigation/)**: Navigation Bar and composable AppNavHost for screen transitions.
-    - **`domain/`**: Business logic layer including use cases and domain models.
-    - **`sheet/`**: Bottom sheet components and related UI logic.
+    - **[`data/`](app/src/main/java/com/fittrackapp/fittrack_mobile/data/)**: Data layer including local database, entities, DAOs, and remote API interfaces.
+    - **[`presentation/`](app/src/main/java/com/fittrackapp/fittrack_mobile/presentation/)**: UI components, screens, and ViewModels for user interaction.
+    - **[`auto_task/`](app/src/main/java/com/fittrackapp/fittrack_mobile/auto_task/)**: Background workers for tasks like daily summaries and data synchronization.
+    - **[`di/`](app/src/main/java/com/fittrackapp/fittrack_mobile/di/)**: Dependency injection setup using Hilt modules.
+    - **[`navigation/`](app/src/main/java/com/fittrackapp/fittrack_mobile/navigation/)**: Navigation Logics and composable [AppNavHost](app/src/main/java/com/fittrackapp/fittrack_mobile/navigation/AppNavHost.kt) for screen transitions.
+    - **[`domain/`](app/src/main/java/com/fittrackapp/fittrack_mobile/domain/)**: Business logic layer including use cases and domain models.
+    - **[`sheet/`](app/src/main/java/com/fittrackapp/fittrack_mobile/sheet/)**: Bottom sheet components and related UI logic.
   - **`src/main/res/`**: App resources such as layouts, drawables, and values.
   - **`src/main/AndroidManifest.xml`**: App manifest file defining permissions and components.
 - **`build.gradle`**: Gradle build configuration for dependencies and plugins.
