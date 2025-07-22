@@ -81,7 +81,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = hiltViewModel()) {
                     DailySummarySection(
                         modifier = Modifier.weight(1f),
                         total = state.totalDistance,
-                        title = "Total Distance",
+                        title = "Distance",
                         dataColor = BluePrimary,
                         unit = "km",
                         hourlyData = state.hourlyDistanceData

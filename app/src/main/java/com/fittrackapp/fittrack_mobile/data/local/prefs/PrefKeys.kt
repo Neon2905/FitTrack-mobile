@@ -15,5 +15,5 @@ object PrefKeys {
         set(value) = prefs.putDouble("daily_calories", value)
 
     val dailyCalorieGoalFlow: Flow<Double>
-        get() = prefs.doubleFlow("daily_calories", 2000.0)
+        get() = prefs.doubleFlow("daily_calories", 200.0)
 }
